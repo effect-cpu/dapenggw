@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 大鹏智障计算器</title>
+    <style>
+        /* ===== 1. 重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'sans-serif', Arial, sans-serif;
+            background: #0a0e1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ===== 2. 星空背景 ===== */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background: radial-gradient(ellipse at bottom, #0a0e1a 0%, #02040a 100%);
+        }
+
+        /* ===== 3. 计算器主体 ===== */
+        .calculator {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 400px;
+            background: #1C1C1E;
+            border-radius: 24px;
+            padding: 16px 12px 20px;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8), 0 0 60px rgba(65, 95, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            margin: 20px;
+        }
+
+        /* ===== 4. 显示区域 ===== */
+        .display-area {
+            padding: 20px 20px 12px;
+            text-align: right;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .display-area .history {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 300;
+            min-height: 28px;
+            letter-spacing: 0.5px;
+            font-family: 'sans-serif-light', Arial, sans-serif;
+            transition: all 0.2s;
+        }
+
+        .display-area .expression {
+            font-size: 32px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+            min-height: 44px;
+            letter-spacing: 1px;
+            font-family: 'sans-serif-light', Arial, sans-serif;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .display-area .result {
+            font-size: 52px;
+            color: #30D158;
+            font-weight: 300;
+            min-height: 64px;
+            letter-spacing: 1px;
+            font-family: 'sans-serif-light', Arial, sans-serif;
+            transition: all 0.3s;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .display-area .result.error {
+            color: #FF453A;
+            font-size: 28px;
+        }
+
+        .display-area .result.brain {
+            color: #FFB800;
+            animation: brainPulse 0.8s ease-in-out 3;
+        }
+
+        @keyframes brainPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.7; }
+        }
+
+        /* 分割线 */
+        .divider {
+            background: rgba(255, 255, 255, 0.08);
+            height: 1px;
+            margin: 4px 16px 12px;
+        }
+
+        /* ===== 5. 按钮网格 ===== */
+        .btn-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0 4px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            flex: 1;
+            height: 68px;
+            border: none;
+            border-radius: 50px;
+            font-size: 24px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: 'sans-serif-medium', Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 按钮点击波纹 */
+        .btn .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(0);
+            animation: rippleAnim 0.6s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes rippleAnim {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        /* ===== 6. 按钮类型 ===== */
+        /* 数字按钮 */
+        .btn-number {
+            background: #333336;
+            color: #FFFFFF;
+        }
+        .btn-number:active {
+            background: #4a4a4e;
+            transform: scale(0.94);
+        }
+        .btn-number.large {
+            flex: 2;
+            justify-content: flex-start;
+            padding-left: 28px;
+        }
+
+        /* 功能按钮 (AC, +/-, %) */
+        .btn-func {
+            background: #2C2C2E;
+            color: #30D158;
+            font-size: 20px;
+        }
+        .btn-func:active {
+            background: #3d3d40;
+            transform: scale(0.94);
+        }
+
+        /* 运算符按钮 (÷, ×, -, +) */
+        .btn-operator {
+            background: #FF9F0A;
+            color: #FFFFFF;
+            font-size: 28px;
+        }
+        .btn-operator:active {
+            background: #e68a00;
+            transform: scale(0.94);
+        }
+        .btn-operator.active {
+            background: #FFFFFF;
+            color: #FF9F0A;
+        }
+
+        /* 等号按钮 */
+        .btn-equals {
+            background: #30D158;
+            color: #000000;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .btn-equals:active {
+            background: #28b84a;
+            transform: scale(0.94);
+        }
+
+        /* ===== 7. 智障特效 ===== */
+        .btn-glitch {
+            animation: glitch 0.3s ease-in-out;
+        }
+        @keyframes glitch {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-4px) rotate(-2deg); }
+            50% { transform: translateX(4px) rotate(2deg); }
+            75% { transform: translateX(-2px); }
+            100% { transform: translateX(0); }
+        }
+
+        .result-glitch {
+            animation: resultGlitch 0.4s ease-in-out;
+        }
+        @keyframes resultGlitch {
+            0% { transform: scale(1); opacity: 1; }
+            20% { transform: scale(0.95) skewX(3deg); opacity: 0.7; color: #FF453A; }
+            40% { transform: scale(1.05) skewX(-3deg); opacity: 0.8; color: #FFB800; }
+            60% { transform: scale(0.98); opacity: 0.9; color: #30D158; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ===== 8. 弹窗 ===== */
+        .pop-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pop-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .pop-box {
+            width: 320px;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(24px);
+            border-radius: 20px;
+            overflow: hidden;
+            transform: scale(0.8) rotate(-3deg);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+        }
+        .pop-box.show {
+            opacity: 1;
+            transform: scale(1) rotate(0);
+        }
+
+        .pop-box .pop-header {
+            padding: 20px 24px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            margin: 0 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .pop-box .pop-header .pop-icon {
+            font-size: 28px;
+        }
+        .pop-box .pop-header .pop-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .pop-box .pop-header .pop-title small {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .pop-box .pop-body {
+            padding: 16px 24px 20px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: center;
+        }
+        .pop-box .pop-body .pop-emoji {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .pop-box .pop-footer {
+            display: flex;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .pop-box .pop-footer button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.5px;
+        }
+        .pop-box .pop-footer button:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: #fff;
+        }
+        .pop-box .pop-footer .btn-primary {
+            background: rgba(48, 209, 88, 0.15);
+            color: #30D158;
+            border-radius: 0 0 20px 0;
+        }
+        .pop-box .pop-footer .btn-primary:hover {
+            background: rgba(48, 209, 88, 0.25);
+            color: #fff;
+        }
+        .pop-box .pop-footer .btn-secondary {
+            border-radius: 0 0 0 20px;
+        }
+
+        /* ===== 9. 智障水印 ===== */
+        .watermark {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.05);
+            letter-spacing: 4px;
+            font-weight: 300;
+        }
+
+        /* ===== 10. 响应式 ===== */
+        @media (max-width: 480px) {
+            .calculator { padding: 12px 8px 16px; margin: 10px; }
+            .display-area { padding: 12px 12px 8px; min-height: 100px; }
+            .display-area .result { font-size: 38px; min-height: 48px; }
+            .display-area .expression { font-size: 24px; min-height: 32px; }
+            .display-area .history { font-size: 15px; min-height: 22px; }
+            .btn { height: 56px; font-size: 20px; border-radius: 40px; }
+            .btn-func { font-size: 17px; }
+            .btn-operator { font-size: 24px; }
+            .btn-equals { font-size: 24px; }
+            .btn-row { gap: 6px; }
+            .btn-grid { gap: 6px; }
+            .pop-box { width: 280px; }
+        }
+
+        @media (max-width: 380px) {
+            .btn { height: 48px; font-size: 17px; }
+            .display-area .result { font-size: 32px; }
+            .display-area .expression { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 星空背景 ===== -->
+    <canvas id="starfield"></canvas>
+
+    <!-- ===== 计算器 ===== -->
+    <div class="calculator">
+        <!-- 显示区域 -->
+        <div class="display-area">
+            <div class="history" id="historyDisplay"></div>
+            <div class="expression" id="expressionDisplay"></div>
+            <div class="result" id="resultDisplay">0</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 按钮网格 -->
+        <div class="btn-grid" id="btnGrid">
+
+            <!-- 第1行 -->
+            <div class="btn-row">
+                <button class="btn btn-func" data-action="clear">AC</button>
+                <button class="btn btn-func" data-action="negate">+/−</button>
+                <button class="btn btn-func" data-action="percent">%</button>
+                <button class="btn btn-operator" data-action="operator" data-value="÷">÷</button>
+            </div>
+
+            <!-- 第2行 -->
+            <div class="btn-row">
+                <button class="btn btn-number" data-action="number" data-value="7">7</button>
+                <button class="btn btn-number" data-action="number" data-value="8">8</button>
+                <button class="btn btn-number" data-action="number" data-value="9">9</button>
+                <button class="btn btn-operator" data-action="operator" data-value="×">×</button>
+            </div>
+
+            <!-- 第3行 -->
+            <div class="btn-row">
+                <button class="btn btn-number" data-action="number" data-value="4">4</button>
+                <button class="btn btn-number" data-action="number" data-value="5">5</button>
+                <button class="btn btn-number" data-action="number" data-value="6">6</button>
+                <button class="btn btn-operator" data-action="operator" data-value="−">−</button>
+            </div>
+
+            <!-- 第4行 -->
+            <div class="btn-row">
+                <button class="btn btn-number" data-action="number" data-value="1">1</button>
+                <button class="btn btn-number" data-action="number" data-value="2">2</button>
+                <button class="btn btn-number" data-action="number" data-value="3">3</button>
+                <button class="btn btn-operator" data-action="operator" data-value="+">+</button>
+            </div>
+
+            <!-- 第5行 -->
+            <div class="btn-row">
+                <button class="btn btn-number large" data-action="number" data-value="0">0</button>
+                <button class="btn btn-number" data-action="number" data-value=".">.</button>
+                <button class="btn btn-equals" data-action="equals">=</button>
+            </div>
+
+        </div>
+
+        <div class="watermark">🧠 大鹏AI智障 · 计算器滞留版</div>
+    </div>
+
+    <!-- ===== 弹窗 ===== -->
+    <div class="pop-overlay" id="popOverlay">
+        <div class="pop-box" id="popBox">
+            <div class="pop-header">
+                <span class="pop-icon" id="popIcon">🧠</span>
+                <div class="pop-title" id="popTitle">大鹏AI智障 <small>计算结果仅供参考</small></div>
+            </div>
+            <div class="pop-body" id="popBody">
+                <span class="pop-emoji">🤔</span>
+                <div id="popMessage">我算的对吗？</div>
+            </div>
+            <div class="pop-footer">
+                <button class="btn-secondary" id="popCancel">重新算</button>
+                <button class="btn-primary" id="popConfirm">相信你</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================================================================
+        // 1. 星空粒子背景
+        // ================================================================
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let w, h, stars;
+
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        stars = Array.from({ length: 120 }, () => ({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            r: Math.random() * 1.5 + 0.5,
+            dx: (Math.random() - 0.5) * 0.3,
+            dy: (Math.random() - 0.5) * 0.3,
+            o: Math.random() * 0.5 + 0.2
+        }));
+
+        function drawStars() {
+            ctx.clearRect(0, 0, w, h);
+            stars.forEach(s => {
+                s.x += s.dx;
+                s.y += s.dy;
+                if (s.x < 0) s.x = w;
+                if (s.x > w) s.x = 0;
+                if (s.y < 0) s.y = h;
+                if (s.y > h) s.y = 0;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255,255,255,${s.o})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(drawStars);
+        }
+        drawStars();
+
+        // ================================================================
+        // 2. 计算器逻辑
+        // ================================================================
+        const historyDisplay = document.getElementById('historyDisplay');
+        const expressionDisplay = document.getElementById('expressionDisplay');
+        const resultDisplay = document.getElementById('resultDisplay');
+
+        let currentInput = '0';
+        let previousInput = '';
+        let operator = null;
+        let shouldResetInput = false;
+        let hasResult = false;
+        let dotCount = 0;
+
+        // 智障配置
+        const BRAIN_CONFIG = {
+            glitchChance: 0.3, // 故障概率
+            extraZeroChance: 0.15, // 多零概率
+            randomOffset: 0.15, // 随机偏移概率
+            offsetRange: 10, // 偏移范围
+            percentWeird: 0.3, // 百分号诡异概率
+        };
+
+        // ===== 更新显示 =====
+        function updateDisplay() {
+            let display = currentInput;
+            if (display.length > 12) {
+                display = parseFloat(display).toExponential(6);
+            }
+            resultDisplay.textContent = display || '0';
+            expressionDisplay.textContent = previousInput + (operator || '');
+            if (hasResult) {
+                historyDisplay.textContent = previousInput + ' =';
+            } else {
+                historyDisplay.textContent = '';
+            }
+        }
+
+        // ===== 智障效果：随机飘移 =====
+        function brainFart(value) {
+            if (Math.random() < BRAIN_CONFIG.randomOffset) {
+                const offset = (Math.random() - 0.5) * BRAIN_CONFIG.offsetRange * 2;
+                const newVal = parseFloat(value) + offset;
+                showPopup('🧠', '大鹏AI智障', '我觉得答案应该是...', 
+                    `原本 ${value}，我微调了一下，变成 ${newVal.toFixed(2)}！`);
+                return String(Math.round(newVal * 100) / 100);
+            }
+            return value;
+        }
+
+        // ===== 智障效果：多零 =====
+        function brainExtraZero(value) {
+            if (Math.random() < BRAIN_CONFIG.extraZeroChance && !value.includes('.')) {
+                const newVal = value + '0';
+                showPopup('0️⃣', '大鹏AI智障', '我觉得你少打了个0', `帮你加上了：${value} → ${newVal}`);
+                return newVal;
+            }
+            return value;
+        }
+
+        // ===== 执行运算 =====
+        function calculate(a, op, b) {
+            const numA = parseFloat(a);
+            const numB = parseFloat(b);
+
+            if (op === '÷' && numB === 0) {
+                showPopup('♾️', '大鹏AI智障', '你居然除以0！', '答案是无限接近宇宙...🌌');
+                return '无限🌌';
+            }
+
+            let result;
+            switch (op) {
+                case '+': result = numA + numB; break;
+                case '−': result = numA - numB; break;
+                case '×': result = numA * numB; break;
+                case '÷': result = numA / numB; break;
+                default: return b;
+            }
+
+            // 智障随机偏移
+            if (Math.random() < BRAIN_CONFIG.randomOffset) {
+                const offset = (Math.random() - 0.5) * BRAIN_CONFIG.offsetRange;
+                const oldResult = result;
+                result = result + offset;
+                showPopup('🧠', '大鹏AI智障', '我觉得应该这样算', 
+                    `本来 ${oldResult.toFixed(2)}，我修正为 ${result.toFixed(2)}！`);
+            }
+
+            // 智障多零（对结果）
+            if (Math.random() < BRAIN_CONFIG.extraZeroChance && !isNaN(result) && isFinite(result)) {
+                result = result * 10;
+                showPopup('0️⃣', '大鹏AI智障', '结果后面应该加个0', `变成 ${result.toFixed(2)} 了！`);
+            }
+
+            return String(Math.round(result * 100) / 100);
+        }
+
+        // ===== 处理数字输入 =====
+        function inputNumber(value) {
+            if (hasResult) {
+                currentInput = '0';
+                previousInput = '';
+                operator = null;
+                hasResult = false;
+                dotCount = 0;
+            }
+
+            if (shouldResetInput) {
+                currentInput = '0';
+                shouldResetInput = false;
+                dotCount = 0;
+            }
+
+            if (value === '.') {
+                if (dotCount >= 1) {
+                    showPopup('📝', '大鹏AI智障', '你写小说呢？', '不能写这么多小数点！');
+                    return;
+                }
+                if (currentInput.includes('.')) return;
+                dotCount++;
+                currentInput += '.';
+            } else {
+                // 智障：偶尔多按一个0
+                let finalValue = value;
+                if (value === '0' && Math.random() < BRAIN_CONFIG.extraZeroChance) {
+                    finalValue = '00';
+                    showPopup('0️⃣', '大鹏AI智障', '你按了两下0吧', '我帮你多按了一个！');
+                }
+                if (currentInput === '0' && value !== '.') {
+                    currentInput = finalValue;
+                } else {
+                    currentInput += finalValue;
+                }
+            }
+
+            updateDisplay();
+        }
+
+        // ===== 处理运算符 =====
+        function inputOperator(op) {
+            if (operator && !shouldResetInput) {
+                // 连续运算
+                const result = calculate(previousInput, operator, currentInput);
+                if (result === '无限🌌') {
+                    currentInput = '0';
+                    previousInput = '';
+                    operator = null;
+                    hasResult = false;
+                    updateDisplay();
+                    return;
+                }
+                currentInput = result;
+                previousInput = result;
+                operator = op;
+                hasResult = false;
+                shouldResetInput = true;
+                updateDisplay();
+                // 高亮运算符
+                highlightOperator(op);
+                return;
+            }
+
+            if (currentInput === '') return;
+
+            if (previousInput && operator && !hasResult) {
+                const result = calculate(previousInput, operator, currentInput);
+                if (result === '无限🌌') {
+                    currentInput = '0';
+                    previousInput = '';
+                    operator = null;
+                    hasResult = false;
+                    updateDisplay();
+                    return;
+                }
+                currentInput = result;
+            }
+
+            previousInput = currentInput;
+            operator = op;
+            shouldResetInput = true;
+            hasResult = false;
+            dotCount = 0;
+            updateDisplay();
+            highlightOperator(op);
+        }
+
+        // ===== 高亮运算符 =====
+        function highlightOperator(op) {
+            document.querySelectorAll('.btn-operator').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.btn-operator').forEach(b => {
+                if (b.dataset.value === op) b.classList.add('active');
+            });
+        }
+
+        // ===== 清除高亮 =====
+        function clearOperatorHighlight() {
+            document.querySelectorAll('.btn-operator').forEach(b => b.classList.remove('active'));
+        }
+
+        // ===== 等于 =====
+        function handleEquals() {
+            if (!operator || shouldResetInput) {
+                if (hasResult) {
+                    showPopup('🧠', '大鹏AI智障', '你又按了一次等号', '我记住了，上次是 ' + currentInput);
+                }
+                return;
+            }
+
+            const result = calculate(previousInput, operator, currentInput);
+            if (result === '无限🌌') {
+                currentInput = '0';
+                previousInput = '';
+                operator = null;
+                hasResult = false;
+                updateDisplay();
+                clearOperatorHighlight();
+                return;
+            }
+
+            // 智障：偶尔问一下自己算的对不对
+            if (Math.random() < 0.35) {
+                showPopup('🤔', '大鹏AI智障', '我算的对吗？', `结果是 ${result}，但我有点怀疑自己...`);
+            }
+
+            hasResult = true;
+            previousInput = previousInput + ' ' + operator + ' ' + currentInput;
+            currentInput = result;
+            operator = null;
+            shouldResetInput = true;
+            dotCount = 0;
+            updateDisplay();
+            clearOperatorHighlight();
+
+            // 结果闪动特效
+            resultDisplay.classList.remove('result-glitch');
+            void resultDisplay.offsetWidth;
+            resultDisplay.classList.add('result-glitch');
+        }
+
+        // ===== 清除 =====
+        function handleClear() {
+            if (Math.random() < 0.2) {
+                showPopup('😢', '大鹏AI智障', '你确定要清除吗？', '我刚才算了好久...');
+            }
+            currentInput = '0';
+            previousInput = '';
+            operator = null;
+            shouldResetInput = false;
+            hasResult = false;
+            dotCount = 0;
+            updateDisplay();
+            clearOperatorHighlight();
+            resultDisplay.classList.remove('error', 'brain');
+        }
+
+        // ===== 正负号 =====
+        function handleNegate() {
+            if (currentInput === '0') return;
+            if (currentInput.startsWith('-')) {
+                currentInput = currentInput.substring(1);
+            } else {
+                currentInput = '-' + currentInput;
+            }
+            showPopup('🔄', '大鹏AI智障', '翻转一下！', `变成 ${currentInput} 了，这下更乱了🤪`);
+            updateDisplay();
+        }
+
+        // ===== 百分号 =====
+        function handlePercent() {
+            const num = parseFloat(currentInput);
+            if (isNaN(num)) return;
+
+            // 智障：偶尔算错
+            if (Math.random() < BRAIN_CONFIG.percentWeird) {
+                const weird = num * 0.01 + (Math.random() - 0.5) * 5;
+                currentInput = String(Math.round(weird * 100) / 100);
+                showPopup('💀', '大鹏AI智障', '百分号被我玩坏了', `${num}% 我算成 ${currentInput} 了！`);
+            } else {
+                currentInput = String(num / 100);
+            }
+            updateDisplay();
+        }
+
+        // ================================================================
+        // 3. 弹窗系统
+        // ================================================================
+        const popOverlay = document.getElementById('popOverlay');
+        const popBox = document.getElementById('popBox');
+        const popIcon = document.getElementById('popIcon');
+        const popTitle = document.getElementById('popTitle');
+        const popBody = document.getElementById('popBody');
+        const popMessage = document.getElementById('popMessage');
+        const popCancel = document.getElementById('popCancel');
+        const popConfirm = document.getElementById('popConfirm');
+
+        let popupCallback = null;
+
+        function showPopup(icon, title, message, detail) {
+            popIcon.textContent = icon || '🧠';
+            popTitle.innerHTML = title + ' <small>大鹏AI智障 · 实时反馈</small>';
+            popMessage.textContent = message || '我算的对吗？';
+            // 如果有详情，替换emoji下面那行
+            const emoji = popBody.querySelector('.pop-emoji');
+            if (detail) {
+                popBody.innerHTML = `<span class="pop-emoji">${icon || '🧠'}</span><div>${message}</div><div style="font-size:12px;color:rgba(255,255,255,0.3);margin-top:4px;">${detail}</div>`;
+            } else {
+                popBody.innerHTML = `<span class="pop-emoji">${icon || '🤔'}</span><div>${message}</div>`;
+            }
+            popOverlay.classList.add('show');
+            popBox.classList.add('show');
+        }
+
+        function closePopup() {
+            popOverlay.classList.remove('show');
+            popBox.classList.remove('show');
+        }
+
+        popCancel.onclick = function() {
+            closePopup();
+            // 智障：取消后随机重置显示
+            if (Math.random() < 0.3) {
+                currentInput = String(Math.floor(Math.random() * 100));
+                updateDisplay();
+                showPopup('🤪', '大鹏AI智障', '你不相信我！', '那我随便改个数字：' + currentInput);
+            }
+        };
+
+        popConfirm.onclick = function() {
+            closePopup();
+            if (Math.random() < 0.2) {
+                showPopup('❤️', '大鹏AI智障', '谢谢你相信我！', '我以后一定努力算对！');
+            }
+        };
+
+        popOverlay.onclick = function(e) {
+            if (e.target === popOverlay) closePopup();
+        };
+
+        document.onkeydown = function(e) {
+            if (e.key === 'Escape') closePopup();
+        };
+
+        // ================================================================
+        // 4. 按钮绑定
+        // ================================================================
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // 波纹特效
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+
+                const action = this.dataset.action;
+                const value = this.dataset.value;
+
+                // 智障：偶尔按钮抽搐
+                if (Math.random() < BRAIN_CONFIG.glitchChance) {
+                    this.classList.add('btn-glitch');
+                    setTimeout(() => this.classList.remove('btn-glitch'), 300);
+                }
+
+                switch (action) {
+                    case 'number':
+                        inputNumber(value);
+                        break;
+                    case 'operator':
+                        inputOperator(value);
+                        break;
+                    case 'equals':
+                        handleEquals();
+                        break;
+                    case 'clear':
+                        handleClear();
+                        break;
+                    case 'negate':
+                        handleNegate();
+                        break;
+                    case 'percent':
+                        handlePercent();
+                        break;
+                }
+            });
+        });
+
+        // ================================================================
+        // 5. 键盘支持
+        // ================================================================
+        document.addEventListener('keydown', function(e) {
+            const key = e.key;
+            if (key >= '0' && key <= '9') {
+                document.querySelector(`.btn-number[data-value="${key}"]`)?.click();
+            } else if (key === '.') {
+                document.querySelector(`.btn-number[data-value="."]`)?.click();
+            } else if (key === '+') {
+                document.querySelector(`.btn-operator[data-value="+"]`)?.click();
+            } else if (key === '-') {
+                document.querySelector(`.btn-operator[data-value="−"]`)?.click();
+            } else if (key === '*') {
+                document.querySelector(`.btn-operator[data-value="×"]`)?.click();
+            } else if (key === '/') {
+                document.querySelector(`.btn-operator[data-value="÷"]`)?.click();
+            } else if (key === 'Enter' || key === '=') {
+                document.querySelector(`.btn-equals`)?.click();
+            } else if (key === 'Escape' || key === 'c' || key === 'C') {
+                document.querySelector(`.btn-func[data-action="clear"]`)?.click();
+            } else if (key === '%') {
+                document.querySelector(`.btn-func[data-action="percent"]`)?.click();
+            }
+        });
+
+        // ===== 初始化 =====
+        updateDisplay();
+
+        // 欢迎弹窗
+        setTimeout(() => {
+            showPopup('🧠', '大鹏AI智障', '欢迎使用智障计算器！', '我会努力算错的！💪');
+        }, 800);
+
+        console.log('🧠 大鹏AI智障计算器已加载！');
+        console.log('💡 提示：所有计算都有概率随机飘移，这就是"智障版"的灵魂！');
+    </script>
+
+</body>
+</html>

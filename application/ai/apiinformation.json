@@ -1,0 +1,9 @@
+{
+    "api_url": "http://127.0.0.1:11434/v1",
+    "api_key": "ollama",
+    "models": [
+        "qwen2.5:1.5b",
+        "qwen2.5vl:3b"
+    ],
+    "description": "大鹏AI智障 · Ollama 配置"
+}

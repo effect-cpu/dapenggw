@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🧠 大鹏AI智障 · 反向旗舰</title>
+    <script src="../../api_config.js" onerror="console.warn('⚠️ 未找到 api_config.js')"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e1a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.6s ease;
+        }
+        body.light-mode {
+            background: #f0ece6;
+        }
+        body.light-mode .top-bar .logo { color: #1a1a1a; }
+        body.light-mode .top-bar .back-btn { color: rgba(0,0,0,0.4); }
+        body.light-mode .top-bar .back-btn:hover { color: #000; }
+        body.light-mode .top-bar { background: rgba(240,236,230,0.7); border-bottom: 1px solid rgba(0,0,0,0.04); }
+        body.light-mode .chat-message.user .message-content { background: rgba(65,95,255,0.08); color: #1a1a1a; }
+        body.light-mode .chat-message.ai .message-content { background: rgba(0,0,0,0.04); color: #1a1a1a; }
+        body.light-mode .chat-input { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
+        body.light-mode .chat-input input { color: #1a1a1a; }
+        body.light-mode .chat-input input::placeholder { color: rgba(0,0,0,0.2); }
+        body.light-mode .model-selector { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.04); }
+        body.light-mode .model-selector .selected { color: #1a1a1a; }
+        body.light-mode .model-selector .dropdown { background: rgba(240,236,230,0.95); border-color: rgba(0,0,0,0.04); }
+        body.light-mode .model-selector .dropdown li { color: #1a1a1a; }
+        body.light-mode .model-selector .dropdown li:hover { background: rgba(0,0,0,0.04); }
+        body.light-mode .status-bar { color: rgba(0,0,0,0.2); }
+        body.light-mode .empty-state { color: rgba(0,0,0,0.08); }
+
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background: radial-gradient(ellipse at bottom, #0a0e1a 0%, #02040a 100%);
+            transition: opacity 0.6s ease;
+        }
+        body.light-mode #starfield { opacity: 0.15; }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(10,14,26,0.55);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            height: 56px;
+        }
+        .top-bar .back-btn {
+            color: rgba(255,255,255,0.4);
+            font-size: 13px;
+            padding: 5px 14px;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 30px;
+            cursor: pointer;
+            background: transparent;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        .top-bar .back-btn:hover { color: #fff; border-color: rgba(65,95,255,0.3); background: rgba(65,95,255,0.05); }
+        .top-bar .logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+        .top-bar .logo span { color: #415fff; }
+        .top-bar .logo small {
+            font-size: 11px;
+            font-weight: 300;
+            color: rgba(255,255,255,0.15);
+            margin-left: 6px;
+        }
+        .top-bar .status-bar {
+            margin-left: auto;
+            font-size: 10px;
+            color: rgba(255,255,255,0.12);
+            font-family: monospace;
+            background: rgba(255,255,255,0.02);
+            padding: 2px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.03);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .top-bar .status-bar .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .top-bar .status-bar .dot.online { background: #52c41a; animation: dotPulse 2s ease-in-out infinite; }
+        .top-bar .status-bar .dot.offline { background: #ff4d4f; }
+        .top-bar .status-bar .dot.thinking { background: #faad14; animation: dotPulse 0.6s ease-in-out infinite; }
+        @keyframes dotPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 76px 16px 100px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== 自定义模型选择器（仿官网下拉菜单） ===== */
+        .model-selector {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 14px 6px 18px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            width: fit-content;
+            margin-bottom: 12px;
+            user-select: none;
+        }
+        .model-selector:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: rgba(65,95,255,0.15);
+        }
+        .model-selector .selected {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .model-selector .selected strong {
+            color: #fff;
+            font-weight: 600;
+        }
+        .model-selector .arrow {
+            font-size: 10px;
+            color: rgba(255,255,255,0.15);
+            transition: transform 0.3s ease;
+            margin-left: 4px;
+        }
+        .model-selector .arrow.open {
+            transform: rotate(180deg);
+        }
+
+        .model-selector .dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            min-width: 100%;
+            background: rgba(20,24,40,0.95);
+            backdrop-filter: blur(16px);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.04);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            list-style: none;
+            padding: 4px 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.96);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            z-index: 100;
+            overflow: hidden;
+        }
+        .model-selector .dropdown.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        .model-selector .dropdown li {
+            padding: 10px 18px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .model-selector .dropdown li:hover {
+            background: rgba(65,95,255,0.06);
+            color: #fff;
+        }
+        .model-selector .dropdown li.active {
+            color: #7b93ff;
+            background: rgba(65,95,255,0.06);
+        }
+        .model-selector .dropdown li .check {
+            float: right;
+            color: #415fff;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .model-selector .dropdown li.active .check {
+            opacity: 1;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 4px 0 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            scroll-behavior: smooth;
+        }
+        .chat-messages::-webkit-scrollbar { width: 3px; }
+        .chat-messages::-webkit-scrollbar-track { background: rgba(255,255,255,0.01); border-radius: 4px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: rgba(65,95,255,0.15); border-radius: 4px; }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.06);
+            font-size: 14px;
+            letter-spacing: 2px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .empty-state .icon { font-size: 56px; display: block; margin-bottom: 12px; animation: floatIcon 3s ease-in-out infinite; }
+        @keyframes floatIcon { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+        .chat-message {
+            display: flex;
+            gap: 10px;
+            max-width: 85%;
+            animation: msgIn 0.3s ease both;
+        }
+        @keyframes msgIn { 0% { opacity: 0; transform: translateY(10px) scale(0.96); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+
+        .chat-message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        .chat-message.ai {
+            align-self: flex-start;
+        }
+
+        .chat-message .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.04);
+        }
+        .chat-message.user .avatar { background: rgba(65,95,255,0.15); }
+        .chat-message.ai .avatar { background: rgba(108,43,217,0.15); }
+
+        .chat-message .message-content {
+            padding: 10px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: rgba(255,255,255,0.8);
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        .chat-message.user .message-content {
+            background: rgba(65,95,255,0.1);
+            border-bottom-right-radius: 4px;
+        }
+        .chat-message.ai .message-content {
+            background: rgba(255,255,255,0.03);
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-message .message-content .typing-dots {
+            display: flex;
+            gap: 4px;
+            padding: 4px 0;
+        }
+        .chat-message .message-content .typing-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            animation: typingBounce 1.2s ease-in-out infinite;
+        }
+        .chat-message .message-content .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .chat-message .message-content .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.02);
+            border-radius: 60px;
+            padding: 4px 4px 4px 18px;
+            border: 1px solid rgba(255,255,255,0.04);
+            transition: all 0.3s ease;
+        }
+        .chat-input:focus-within { border-color: rgba(65,95,255,0.15); box-shadow: 0 0 30px rgba(65,95,255,0.04); }
+        .chat-input input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+            padding: 10px 0;
+        }
+        .chat-input input::placeholder { color: rgba(255,255,255,0.15); }
+        .chat-input button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 40px;
+            background: linear-gradient(135deg, #415fff, #6C2BD9);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .chat-input button:hover { transform: scale(1.02); box-shadow: 0 4px 20px rgba(65,95,255,0.2); }
+        .chat-input button:active { transform: scale(0.94); }
+        .chat-input button:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
+
+
+        /* ================================================================
+           弹窗（完全匹配智障计算器样式）
+           ================================================================ */
+        .pop-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pop-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .pop-box {
+            width: 320px;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(24px);
+            border-radius: 20px;
+            overflow: hidden;
+            transform: scale(0.8) rotate(-3deg);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+        }
+        .pop-box.show {
+            opacity: 1;
+            transform: scale(1) rotate(0);
+        }
+
+        .pop-box .pop-header {
+            padding: 20px 24px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            margin: 0 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .pop-box .pop-header .pop-icon {
+            font-size: 28px;
+        }
+        .pop-box .pop-header .pop-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .pop-box .pop-header .pop-title small {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .pop-box .pop-body {
+            padding: 16px 24px 20px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: center;
+        }
+        .pop-box .pop-body .pop-emoji {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .pop-box .pop-footer {
+            display: flex;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .pop-box .pop-footer button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.5px;
+        }
+        .pop-box .pop-footer button:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: #fff;
+        }
+        .pop-box .pop-footer .btn-primary {
+            background: rgba(48, 209, 88, 0.15);
+            color: #30D158;
+            border-radius: 0 0 20px 0;
+        }
+        .pop-box .pop-footer .btn-primary:hover {
+            background: rgba(48, 209, 88, 0.25);
+            color: #fff;
+        }
+        .pop-box .pop-footer .btn-secondary {
+            border-radius: 0 0 0 20px;
+        }
+
+
+        @media (max-width: 600px) {
+            .top-bar { padding: 8px 12px; height: 48px; }
+            .top-bar .logo { font-size: 15px; }
+            .container { padding: 64px 12px 80px; }
+            .chat-message { max-width: 92%; }
+            .chat-message .message-content { font-size: 13px; padding: 8px 12px; }
+            .model-selector { padding: 4px 12px 4px 14px; }
+            .model-selector .selected { font-size: 12px; }
+            .model-selector .dropdown li { padding: 8px 14px; font-size: 12px; }
+            .chat-input { padding: 4px 4px 4px 14px; }
+            .chat-input input { font-size: 13px; padding: 8px 0; }
+            .chat-input button { padding: 8px 16px; font-size: 13px; }
+            .pop-box { width: 280px; }
+            .pop-box .pop-body { font-size: 13px; padding: 12px 16px 16px; }
+            .pop-box .pop-header { padding: 16px 16px 0; margin: 0 14px; }
+            .pop-box .pop-header .pop-title { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield"></canvas>
+
+    <div class="top-bar">
+        <button class="back-btn" id="backBtn">‹ 返回</button>
+        <div class="logo">大鹏<span>.</span>AI <small>智障版</small></div>
+        <div class="status-bar" id="statusBar">
+            <span class="dot" id="statusDot"></span>
+            <span id="statusText">离线</span>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- 自定义模型选择器 -->
+        <div class="model-selector" id="modelSelector">
+            <span class="selected">🧠 模型：<strong id="currentModelLabel">qwen2.5:1.5b</strong></span>
+            <span class="arrow" id="modelArrow">▾</span>
+            <ul class="dropdown" id="modelDropdown">
+                <li data-value="qwen2.5:1.5b" class="active">qwen2.5:1.5b <span class="check">✓</span></li>
+                <li data-value="qwen2.5vl:3b">qwen2.5vl:3b <span class="check">✓</span></li>
+            </ul>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="empty-state" id="emptyState">
+                <span class="icon">🧠</span>
+                <div>问大鹏AI智障任何问题</div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.03);margin-top:4px;">回答可能不准确，甚至离谱</div>
+            </div>
+        </div>
+
+        <div class="chat-input" id="chatInput">
+            <input type="text" id="userInput" placeholder="问大鹏AI智障点什么..." autocomplete="off">
+            <button id="sendBtn">发送</button>
+        </div>
+
+    </div>
+
+    <!-- ===== 弹窗 HTML（匹配智障计算器） ===== -->
+    <div class="pop-overlay" id="popOverlay">
+        <div class="pop-box" id="popBox">
+            <div class="pop-header">
+                <span class="pop-icon" id="popIcon">🧠</span>
+                <div class="pop-title" id="popTitle">
+                    大鹏AI智障
+                    <small>v2.7.0 · 反向旗舰</small>
+                </div>
+            </div>
+            <div class="pop-body" id="popBody">
+                <span class="pop-emoji">🤔</span>
+                <div id="popMessage">加载中...</div>
+            </div>
+            <div class="pop-footer">
+                <button class="btn-secondary" id="popCancel">取消</button>
+                <button class="btn-primary" id="popConfirm">知道了</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================================================================
+        // 星空背景
+        // ================================================================
+        var canvas = document.getElementById('starfield');
+        var ctx = canvas.getContext('2d');
+        var w, h, stars;
+
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        stars = [];
+        for (var i = 0; i < 120; i++) {
+            stars.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                r: Math.random() * 1.5 + 0.5,
+                dx: (Math.random() - 0.5) * 0.3,
+                dy: (Math.random() - 0.5) * 0.3,
+                o: Math.random() * 0.5 + 0.2
+            });
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, w, h);
+            for (var i = 0; i < stars.length; i++) {
+                var s = stars[i];
+                s.x += s.dx;
+                s.y += s.dy;
+                if (s.x < 0) s.x = w;
+                if (s.x > w) s.x = 0;
+                if (s.y < 0) s.y = h;
+                if (s.y > h) s.y = 0;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,' + s.o + ')';
+                ctx.fill();
+            }
+            requestAnimationFrame(drawStars);
+        }
+        drawStars();
+
+        // ================================================================
+        // API 配置
+        // ================================================================
+        var OLLAMA_HOST = 'http://127.0.0.1:11434/v1';
+        var API_KEY = 'ollama';
+
+        // 🔥 优先使用 ollamaHost（自动处理 IPv6 中括号）
+if (typeof API_CONFIG !== 'undefined' && API_CONFIG && API_CONFIG.ollamaHost) {
+    OLLAMA_HOST = API_CONFIG.ollamaHost;
+    console.log('✅ 使用 ollamaHost:', OLLAMA_HOST);
+} else if (typeof API_CONFIG !== 'undefined' && API_CONFIG && API_CONFIG.ip) {
+    var ip = API_CONFIG.ip;
+    var ipType = API_CONFIG.ipType || 'ipv4';
+    if (ipType === 'ipv6') {
+        OLLAMA_HOST = 'http://[' + ip + ']:11434/v1';
+    } else {
+        OLLAMA_HOST = 'http://' + ip + ':11434/v1';
+    }
+    console.log('✅ 从 IP 构建:', OLLAMA_HOST);
+}
+        console.log('📍 Ollama OpenAI 地址:', OLLAMA_HOST);
+
+        // ================================================================
+        // DOM 元素
+        // ================================================================
+        var chatMessages = document.getElementById('chatMessages');
+        var userInput = document.getElementById('userInput');
+        var sendBtn = document.getElementById('sendBtn');
+        var backBtn = document.getElementById('backBtn');
+        var emptyState = document.getElementById('emptyState');
+        var statusDot = document.getElementById('statusDot');
+        var statusText = document.getElementById('statusText');
+        var statusBar = document.getElementById('statusBar');
+
+        // 弹窗元素
+        var popOverlay = document.getElementById('popOverlay');
+        var popBox = document.getElementById('popBox');
+        var popIcon = document.getElementById('popIcon');
+        var popTitle = document.getElementById('popTitle');
+        var popMessage = document.getElementById('popMessage');
+        var popCancel = document.getElementById('popCancel');
+        var popConfirm = document.getElementById('popConfirm');
+
+        // 自定义下拉菜单元素
+        var modelSelector = document.getElementById('modelSelector');
+        var modelDropdown = document.getElementById('modelDropdown');
+        var modelArrow = document.getElementById('modelArrow');
+        var currentModelLabel = document.getElementById('currentModelLabel');
+        var dropdownItems = modelDropdown.querySelectorAll('li');
+
+        var isProcessing = false;
+        var currentModel = 'qwen2.5:1.5b';
+        var isDropdownOpen = false;
+
+        // ================================================================
+        // 弹窗系统（匹配智障计算器）
+        // ================================================================
+        function showPopup(icon, title, message, detail) {
+            popIcon.textContent = icon || '🧠';
+            popTitle.innerHTML = title + ' <small>v2.7.0 · 反向旗舰</small>';
+
+            // 如果有详情，显示在消息下方
+            var bodyHtml = '<span class="pop-emoji">' + (icon || '🤔') + '</span>';
+            bodyHtml += '<div>' + message + '</div>';
+            if (detail) {
+                bodyHtml += '<div style="font-size:12px;color:rgba(255,255,255,0.15);margin-top:4px;white-space:pre-line;">' + detail + '</div>';
+            }
+            popMessage.innerHTML = bodyHtml;
+
+            popOverlay.classList.add('show');
+            popBox.classList.add('show');
+        }
+
+        function closePopup() {
+            popOverlay.classList.remove('show');
+            popBox.classList.remove('show');
+        }
+
+        // 弹窗按钮事件
+        popCancel.onclick = closePopup;
+        popConfirm.onclick = closePopup;
+
+        // 点击遮罩关闭
+        popOverlay.onclick = function(e) {
+            if (e.target === popOverlay) {
+                closePopup();
+            }
+        };
+
+        // ESC 关闭
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (popOverlay.classList.contains('show')) {
+                    closePopup();
+                }
+            }
+        });
+
+        // ================================================================
+        // 自定义下拉菜单
+        // ================================================================
+        modelSelector.addEventListener('click', function(e) {
+            e.stopPropagation();
+            isDropdownOpen = !isDropdownOpen;
+            modelDropdown.classList.toggle('open', isDropdownOpen);
+            modelArrow.classList.toggle('open', isDropdownOpen);
+        });
+
+        dropdownItems.forEach(function(item) {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var value = this.dataset.value;
+                var label = this.textContent.replace(' ✓', '').trim();
+
+                dropdownItems.forEach(function(li) {
+                    li.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                currentModel = value;
+                currentModelLabel.textContent = label;
+
+                isDropdownOpen = false;
+                modelDropdown.classList.remove('open');
+                modelArrow.classList.remove('open');
+
+                checkOllamaStatus();
+                console.log('🔄 切换模型:', currentModel);
+            });
+        });
+
+        document.addEventListener('click', function() {
+            if (isDropdownOpen) {
+                isDropdownOpen = false;
+                modelDropdown.classList.remove('open');
+                modelArrow.classList.remove('open');
+            }
+        });
+
+        // ================================================================
+        // 状态管理
+        // ================================================================
+        function setStatus(mode, text) {
+            statusDot.className = 'dot ' + mode;
+            statusText.textContent = text;
+        }
+        
+        // ================================================================
+// 状态点击弹窗
+// ================================================================
+var statusBar = document.getElementById('statusBar');
+
+statusBar.addEventListener('click', function() {
+    var mode = statusDot.className.replace('dot ', '').trim();
+    var text = statusText.textContent;
+    var icon = '📡';
+    var title = '状态详情';
+    var message = '当前状态：' + text;
+    var detail = '';
+
+    switch (mode) {
+        case 'online':
+            icon = '✅';
+            title = '大鹏AI智障 · 在线';
+            message = 'Ollama 服务运行正常';
+            detail = '📍 ' + OLLAMA_HOST + '\n🧠 当前模型：' + currentModel + '\n💡 可以正常对话';
+            break;
+        case 'offline':
+            icon = '❌';
+            title = '大鹏AI智障 · 离线';
+            message = 'Ollama 服务未响应';
+            detail = '📍 ' + OLLAMA_HOST + '\n💡 请检查：\n• Ollama 是否已启动（ollama serve）\n• 端口 11434 是否被占用\n• 防火墙是否放行';
+            break;
+        case 'thinking':
+            icon = '🧠';
+            title = '大鹏AI智障 · 思考中';
+            message = 'AI 正在生成回复...';
+            detail = '⏳ 请稍等，大鹏AI智障正在努力思考\n（虽然想不出什么好东西）';
+            break;
+        default:
+            icon = '📡';
+            title = '大鹏AI智障 · 状态';
+            message = '状态未知';
+            detail = '请刷新页面重试';
+    }
+
+    showPopup(icon, title, message, detail);
+});
+
+        function checkOllamaStatus() {
+            var baseUrl = OLLAMA_HOST.replace('/v1', '');
+            var statusUrl = baseUrl + '/api/tags';
+            setStatus('offline', '连接中...');
+
+            fetch(statusUrl, {
+                headers: { 'Authorization': 'Bearer ' + API_KEY }
+            })
+            .then(function(res) {
+                if (res.ok) {
+                    setStatus('online', '在线');
+                    return res.json();
+                }
+                throw new Error('HTTP ' + res.status);
+            })
+            .then(function(data) {
+                var models = data.models || [];
+                if (models.length === 0) {
+                    setStatus('offline', '无可用模型');
+                }
+            })
+            .catch(function(err) {
+                console.warn('Ollama 连接失败:', err);
+                setStatus('offline', '离线');
+            });
+        }
+
+        // ================================================================
+        // 消息渲染
+        // ================================================================
+        function addMessage(role, content) {
+            emptyState.style.display = 'none';
+
+            var div = document.createElement('div');
+            div.className = 'chat-message ' + role;
+
+            var avatar = document.createElement('span');
+            avatar.className = 'avatar';
+            avatar.textContent = role === 'user' ? '👤' : '🧠';
+
+            var contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = content;
+
+            div.appendChild(avatar);
+            div.appendChild(contentDiv);
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addTypingIndicator() {
+            var div = document.createElement('div');
+            div.className = 'chat-message ai';
+            div.id = 'typingIndicator';
+
+            var avatar = document.createElement('span');
+            avatar.className = 'avatar';
+            avatar.textContent = '🧠';
+
+            var contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+
+            div.appendChild(avatar);
+            div.appendChild(contentDiv);
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            setStatus('thinking', '思考中...');
+        }
+
+        function removeTypingIndicator() {
+            var el = document.getElementById('typingIndicator');
+            if (el) {
+                el.remove();
+            }
+            setStatus('online', '在线');
+        }
+
+        // ================================================================
+        // 发送消息
+        // ================================================================
+        function sendMessage() {
+            var text = userInput.value.trim();
+
+            if (text === '' || isProcessing) {
+                return;
+            }
+
+            if (statusText.textContent === '离线' || statusText.textContent === '连接中...' || statusText.textContent === '无可用模型') {
+                addMessage('ai', '⚠️ 大鹏AI智障离线中，请检查 Ollama 服务是否运行（端口11434）\n\n📍 ' + OLLAMA_HOST);
+                userInput.value = '';
+                return;
+            }
+
+            isProcessing = true;
+            sendBtn.disabled = true;
+
+            addMessage('user', text);
+            userInput.value = '';
+            addTypingIndicator();
+
+            var url = OLLAMA_HOST + '/chat/completions';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + API_KEY
+                },
+                body: JSON.stringify({
+                    model: currentModel,
+                    messages: [
+                        { role: 'user', content: text }
+                    ],
+                    stream: false,
+                    temperature: 1.2,
+                    max_tokens: 1024
+                })
+            })
+            .then(function(response) {
+                removeTypingIndicator();
+                if (!response.ok) {
+                    return response.text().then(function(errorText) {
+                        throw new Error('HTTP ' + response.status + ': ' + errorText);
+                    });
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                var reply = '（大鹏AI智障什么都没说）';
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    reply = data.choices[0].message.content;
+                }
+                if (Math.random() < 0.2) {
+                    var extras = ['🤔 我猜的', '🧠 不一定对', '💀 仅供参考', '🤪 大鹏AI智障出品', '😅 别太当真'];
+                    reply = reply + '\n\n—— ' + extras[Math.floor(Math.random() * extras.length)];
+                }
+                addMessage('ai', reply);
+                setStatus('online', '在线');
+            })
+            .catch(function(err) {
+                removeTypingIndicator();
+                console.error('发送失败:', err);
+                addMessage('ai', '💀 网络错误，请检查 Ollama 服务是否运行\n📍 ' + OLLAMA_HOST + '\n' + err.message);
+                setStatus('offline', '连接失败');
+            })
+            .finally(function() {
+                isProcessing = false;
+                sendBtn.disabled = false;
+                userInput.focus();
+            });
+        }
+
+        // ================================================================
+        // 事件绑定
+        // ================================================================
+        sendBtn.addEventListener('click', sendMessage);
+
+        userInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        backBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.history.back();
+        });
+
+        // ================================================================
+        // 启动
+        // ================================================================
+        console.log('🧠 大鹏AI智障已加载');
+        console.log('📍 Ollama OpenAI 地址:', OLLAMA_HOST);
+
+        // 显示启动弹窗（智障计算器风格）
+        setTimeout(function() {
+            showPopup(
+                '🧠',
+                '大鹏AI智障 · v2.7.0',
+                '「重新定义\'能用就行\'」',
+                '✅ 已接入 Ollama 本地大模型\n✅ 支持 qwen2.5:1.5b / qwen2.5vl:3b\n✅ 在线状态实时检测（绿/红/黄）\n✅ 20% 概率随机吐槽\n✅ 自动获取本机 IP\n✅ OpenAI 兼容接口 /v1/chat/completions\n\n⚠️ 温馨提示：\n• 回答可能不准确\n• 偶尔会胡说八道\n• 别问太复杂的问题\n• 建议保持怀疑态度\n\n—— 大鹏科技 · 反向旗舰'
+            );
+        }, 1500);
+
+        setTimeout(function() {
+            checkOllamaStatus();
+        }, 500);
+
+        setTimeout(function() {
+            addMessage('ai', '👋 你好！我是大鹏AI智障，一个不太聪明的AI助手。\n\n你可以问我任何问题，但我不保证答对！\n\n💡 建议：先确保 Ollama 服务在运行（端口11434）\n📍 ' + OLLAMA_HOST);
+        }, 1200);
+
+        document.addEventListener('click', function() {
+            userInput.focus();
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,306 @@
+{
+    "versions": [
+        {
+            "version": "v1.0.0",
+            "date": "2026-06-01",
+            "summary": "🚀 大鹏官网正式发布",
+            "details": [
+                { "type": "add", "content": "大鹏官网正式上线" },
+                { "type": "add", "content": "首批产品：大鹏 X200 Pro、X Fold 3、TWS 4" },
+                { "type": "add", "content": "导航栏下拉菜单" },
+                { "type": "add", "content": "「2026反向旗舰」品牌定位" }
+            ]
+        },
+        {
+            "version": "v1.5.0",
+            "date": "2026-06-15",
+            "summary": "✨ 新增3D产品展示",
+            "details": [
+                { "type": "add", "content": "新增3D旋转手机展示效果" },
+                { "type": "add", "content": "新增星空粒子背景" },
+                { "type": "optimize", "content": "优化页面加载速度（从10秒降到9.5秒）" },
+                { "type": "fix", "content": "修复了logo偶尔不飞的bug" }
+            ]
+        },
+        {
+            "version": "v2.0.0",
+            "date": "2026-06-21",
+            "summary": "🎉 重大更新：大鹏AI智障上线",
+            "details": [
+                { "type": "add", "content": "新增「大鹏AI智障」本地部署滞留版" },
+                { "type": "add", "content": "新增「120W慢充」反向充电技术" },
+                { "type": "add", "content": "新增「负2亿像素」相机模组" },
+                { "type": "enhance", "content": "增强「128K超高上下文」记忆（记是记住了，说不出来）" },
+                { "type": "fix", "content": "修复了偶尔太智能的bug" },
+                { "type": "fix", "content": "修复了充电速度偶尔正常的bug" }
+            ]
+        },
+        {
+            "version": "v2.0.1",
+            "date": "2026-06-21",
+            "summary": "🔧 修复更新日志排序逻辑",
+            "details": [
+                { "type": "refactor", "content": "重构changelog.json排序逻辑（从新到旧→从旧到新）" },
+                { "type": "fix", "content": "修复更新日志显示保持从新到旧（最新在上面）" }
+            ]
+        },
+        {
+            "version": "v2.0.2",
+            "date": "2026-06-21",
+            "summary": "📚 更新日志词汇表全面升级",
+            "details": [
+                { "type": "upgrade", "content": "升级更新日志词库（新增优化、增强、重构等14个专业词汇）" },
+                { "type": "add", "content": "新增「大鹏特色」词条标注" },
+                { "type": "adjust", "content": "调整版本显示格式，更加清晰" },
+                { "type": "compatible", "content": "兼容更多设备（负2亿像素全平台适配）" },
+                { "type": "remove", "content": "移除「偶尔太智能」的残留bug" }
+            ]
+        },
+        {
+            "version": "v2.1.0",
+            "date": "2026-06-22",
+            "summary": "🦅 新增子品牌「小雕」反向电竞系列",
+            "details": [
+                { "type": "add", "content": "新增子品牌「小雕」（XiaoDiao），定位反向电竞" },
+                { "type": "add", "content": "vivo : iQOO = 大鹏 : 小雕" },
+                { "type": "fix", "content": "修复了子品牌定位不够清晰的bug" }
+            ]
+        },
+        {
+            "version": "v2.2.0",
+            "date": "2026-06-22",
+            "summary": "🎨 统一弹窗系统升级 · 敬请期待全面醒目",
+            "details": [
+                { "type": "upgrade", "content": "升级统一弹窗系统，所有按钮共用同一套弹窗" },
+                { "type": "enhance", "content": "增强「敬请期待」视觉效果：金色渐变流光 + 脉冲光晕徽章" },
+                { "type": "add", "content": "新增产品详情保留手机介绍，底部统一显示敬请期待" },
+                { "type": "add", "content": "服务、社区、立即体验智障 全部统一弹出敬请期待" },
+                { "type": "optimize", "content": "优化弹窗显示逻辑，所有按钮调用同一个 openPopup 函数" },
+                { "type": "fix", "content": "修复了部分按钮弹窗样式不统一的bug" },
+                { "type": "adjust", "content": "调整弹窗宽度从 340px → 360px，显示更舒适" }
+            ]
+        },
+        {
+            "version": "v2.2.1",
+            "date": "2026-06-22",
+            "summary": "🖼️ 新增网页图标（favicon）· 大鹏品牌视觉升级",
+            "details": [
+                { "type": "add", "content": "新增网页图标 favicon.ico（大鹏品牌标识）" },
+                { "type": "add", "content": "新增浏览器标签页图标，提升品牌识别度" },
+                { "type": "add", "content": "新增书签收藏图标，方便用户保存官网" },
+                { "type": "add", "content": "新增移动端主屏幕图标（Apple Touch Icon）" },
+                { "type": "optimize", "content": "优化品牌视觉统一性，大鹏标识覆盖全平台" },
+                { "type": "enhance", "content": "增强品牌记忆点：一只极简大鹏鸟（展翅姿态）" }
+            ]
+        },
+        {
+            "version": "v2.2.2",
+            "date": "2026-06-28",
+            "summary": "🧭 导航栏新增「应用」和「商店」菜单",
+            "details": [
+                { "type": "add", "content": "新增导航菜单「应用」→ 大鹏智障计算机（跳转）" },
+                { "type": "add", "content": "新增导航菜单「商店」→ 大鹏店（敬请期待）" },
+                { "type": "add", "content": "新增跳转路由：/application/dapencomputer/index.html" },
+                { "type": "enhance", "content": "增强导航栏功能，扩展品牌生态入口" }
+            ]
+        },
+        {
+            "version": "v2.2.3",
+            "date": "2026-06-28",
+            "summary": "🧮 应用菜单弹出版本选择悬浮窗",
+            "details": [
+                { "type": "add", "content": "点击「应用→大鹏智障计算器」弹出版本选择悬浮窗" },
+                { "type": "add", "content": "版本一：轻智障版（偶尔算错·随机飘移）" },
+                { "type": "add", "content": "版本二：极致智障版（永远等于第一个数）" },
+                { "type": "enhance", "content": "悬浮窗采用毛玻璃设计，与官网风格统一" },
+                { "type": "remove", "content": "移除「纯智障计算器」独立菜单项，整合进选择悬浮窗" }
+            ]
+        },
+        {
+            "version": "v2.2.4",
+            "date": "2026-06-29",
+            "summary": "🎵 应用菜单新增「大鹏音乐」",
+            "details": [
+                { "type": "add", "content": "应用菜单新增「大鹏音乐」选项" },
+                { "type": "add", "content": "跳转路由：/music/" },
+                { "type": "enhance", "content": "扩展应用生态，音乐板块上线" }
+            ]
+        },
+        {
+            "version": "v2.3.0",
+            "date": "2026-06-29",
+            "summary": "🎵 大鹏音乐 · 搜索+全屏歌词双模式",
+            "details": [
+                { "type": "add", "content": "大鹏音乐新增搜索界面（输入框 + 搜索结果列表）" },
+                { "type": "add", "content": "大鹏音乐新增全屏歌词播放界面（点击歌曲后切换）" },
+                { "type": "add", "content": "歌词根据时间戳滚动高亮，带动画效果" },
+                { "type": "add", "content": "底部播放器：进度条、播放/暂停、上一首/下一首" },
+                { "type": "add", "content": "左下角太阳/月亮切换日夜模式（日间背景图 / 夜间纯黑+星空）" },
+                { "type": "add", "content": "键盘快捷键：空格(播放/暂停)、←/→(快退/快进5秒)、ESC(返回搜索)" },
+                { "type": "add", "content": "日间模式歌词颜色由黑色改为白色，带过渡动画" },
+                { "type": "optimize", "content": "优化全屏歌词滚动体验，使用 scrollIntoView 平滑滚动" },
+                { "type": "enhance", "content": "增强播放体验，歌曲自动连续播放" }
+            ]
+        },
+        {
+            "version": "v2.3.1",
+            "date": "2026-06-30",
+            "summary": "🎵 大鹏音乐 · 全屏歌词体验优化",
+            "details": [
+                { "type": "add", "content": "歌词页新增从下往上的滑入过渡动画" },
+                { "type": "add", "content": "歌词页新增返回按钮，从上往下的滑出过渡动画" },
+                { "type": "add", "content": "点击底部歌曲封面可快速回到歌词页" },
+                { "type": "add", "content": "歌词页顶部新增浮动「回到歌词」按钮" },
+                { "type": "optimize", "content": "限制歌词显示行数（最多30行），避免页面过长" },
+                { "type": "fix", "content": "修正播放/暂停图标逻辑（原来反了）" },
+                { "type": "remove", "content": "移除上一首/下一首按钮（暂时不需要）" },
+                { "type": "fix", "content": "底部播放器背景固定为紫色（#6C2BD9），不受日夜模式影响" },
+                { "type": "enhance", "content": "优化歌词滚动体验，高亮歌词自动居中" }
+            ]
+        },
+        {
+    "version": "v2.3.2",
+    "date": "2026-06-30",
+    "summary": "🎵 大鹏音乐 · 播放器固定与歌词动画优化",
+    "details": [
+        { "type": "fix", "content": "修复播放器在页面缩放时消失的问题（改为 position: fixed 永远可见）" },
+        { "type": "fix", "content": "修正播放/暂停图标逻辑（暂停显示暂停图标，播放显示播放图标）" },
+        { "type": "add", "content": "歌词页新增从下往上的滑入过渡动画" },
+        { "type": "add", "content": "歌词页新增从上往下的滑出过渡动画（返回搜索时）" },
+        { "type": "add", "content": "歌词高亮新增缩放 + 位移过渡动画（0.5s 弹性缓动）" },
+        { "type": "add", "content": "歌词页顶部返回按钮改为「回到搜索」，搜索页改为「返回」" },
+        { "type": "add", "content": "新增浮动「回到歌词」按钮，点击滚动到歌词顶部" },
+        { "type": "optimize", "content": "优化歌词滚动体验，高亮歌词自动居中（带 50ms 延迟防冲突）" }
+    ]
+},
+{
+    "version": "v2.4.0",
+    "date": "2026-06-30",
+    "summary": "🎨 大鹏音乐 · 颜值&动画专项升级",
+    "details": [
+        { "type": "upgrade", "content": "星空粒子全面升级：三层分层（近/中/远景）+ 呼吸闪烁 + 流星随机划过" },
+        { "type": "upgrade", "content": "全局氛围光效：柔光泛光 + 鼠标跟随光晕 + 环境光脉冲动画" },
+        { "type": "upgrade", "content": "导航栏毛玻璃强化（blur 16px）+ Logo 渐变流光文字 + 返回按钮边框流动动画" },
+        { "type": "upgrade", "content": "搜索框聚焦呼吸光晕 + 按钮弹性缩放回弹（88%→102%）" },
+        { "type": "upgrade", "content": "歌曲列表入场错落动画（逐行延迟淡入上滑）" },
+        { "type": "upgrade", "content": "歌曲列表 hover 全套动效：右移上浮 + 渐变发光描边 + 背景光斑扩散" },
+        { "type": "add", "content": "当前播放歌曲特殊标识：左侧流动渐变光条 + 文字呼吸亮度" },
+        { "type": "upgrade", "content": "歌词页激活行流光描边（360°旋转渐变）+ 弹性缓动放大" },
+        { "type": "add", "content": "歌词容器顶部/底部渐变遮罩，进出视野自然淡入淡出" },
+        { "type": "add", "content": "歌词无内容占位动画：音符上下浮动 + 文字明暗呼吸" },
+        { "type": "upgrade", "content": "播放器进度条波纹流动 + 圆点 hover 放大 + 拖拽时高亮" },
+        { "type": "add", "content": "播放按钮外圈脉冲扩散光环（播放时持续动画）" },
+        { "type": "add", "content": "歌名超长时无缝左右滚动动画（淡入淡出衔接）" },
+        { "type": "add", "content": "时间数字更新时轻微缩放弹跳反馈" },
+        { "type": "upgrade", "content": "主题切换按钮 180° 旋转弹性过渡" },
+        { "type": "upgrade", "content": "页面切换双层联动动画（搜索页淡出收缩 + 歌词页弹性滑入）" },
+        { "type": "add", "content": "全局点击弹性缩放统一手感" },
+        { "type": "add", "content": "滚动条美化（渐变发光滑块，闲置自动淡化）" },
+        { "type": "add", "content": "鼠标移动柔光跟随（低饱和度氛围光）" },
+        { "type": "add", "content": "优化性能：页面失焦/切歌词时自动暂停 Canvas 渲染" }
+    ]
+},
+{
+    "version": "v2.5.0",
+    "date": "2026-07-01",
+    "summary": "🎨 歌词全面升级 · 彩色高光 + 全部显示 + 强制居中",
+    "details": [
+        { "type": "upgrade", "content": "歌词全部加载，不再限制30行" },
+        { "type": "add", "content": "正在播放歌词：彩色渐变高光 + 流光动画（红→蓝→黄→紫循环）" },
+        { "type": "add", "content": "歌词文字本身也带渐变色，随背景同步流动" },
+        { "type": "add", "content": "强制居中：正在播放的歌词自动滚动到屏幕正中间" },
+        { "type": "upgrade", "content": "优化歌词滚动逻辑，使用 scrollTop 精确计算居中位置" },
+        { "type": "optimize", "content": "歌词容器改为纯滚动模式，移除 flex 干扰" },
+        { "type": "enhance", "content": "浅色模式同样支持彩色高光，色值自动适配" },
+        { "type": "fix", "content": "修复了歌词无法居中的 bug" }
+    ]
+},
+{
+    "version": "v2.6.1",
+    "date": "2026-07-08",
+    "summary": "🎵 大鹏音乐 · 沉浸式歌词体验官方认证",
+    "details": [
+        { "type": "enhance", "content": "大鹏音乐被用户认证为唯一能正常使用的产品" },
+        { "type": "add", "content": "沉浸式歌词：彩色高光 + 强制居中 + 双语翻译 + 日夜模式" },
+        { "type": "fix", "content": "修复了计算器系列太智障的问题（不打算修了）" }
+    ]
+},
+{
+    "version": "v2.6.2",
+    "date": "2026-07-09",
+    "summary": "🔗 大鹏音乐 · 新增 URL 播放模式 + 模式切换",
+    "details": [
+        { "type": "add", "content": "搜索框新增「模式切换」按钮，支持「搜索播放」和「URL播放」双模式" },
+        { "type": "add", "content": "URL播放模式：输入歌曲URL，点击「进入」直接跳转歌词页" },
+        { "type": "add", "content": "URL播放自动加载当前目录下的 lyric.txt（歌词文件）" },
+        { "type": "add", "content": "URL播放自动加载当前目录下的 information.json（歌曲信息）" },
+        { "type": "add", "content": "URL播放错误提示：URL格式错误 / 404 / 403 / 401 / 网络错误" },
+        { "type": "add", "content": "URL播放加载失败时弹出悬浮窗显示具体错误原因" },
+        { "type": "add", "content": "information.json 格式：{\"name\":\"歌曲名称\",\"writer\":\"作者\"}" },
+        { "type": "add", "content": "URL播放支持 LRC 格式歌词和纯文本歌词" },
+        { "type": "add", "content": "模式切换时输入框提示和按钮文字同步变化" },
+        { "type": "enhance", "content": "优化搜索框布局，模式切换按钮置于最左侧" },
+        { "type": "fix", "content": "修复模式切换后按钮失效的问题" }
+    ]
+},
+{
+    "version": "v2.7.0",
+    "date": "2026-07-23",
+    "summary": "🧠 大鹏AI智障 · 接入 Ollama 本地大模型",
+    "details": [
+        { "type": "add", "content": "新增「大鹏AI智障」AI 对话功能（基于 Ollama 本地部署）" },
+        { "type": "add", "content": "应用菜单新增「大鹏AI智障」入口" },
+        { "type": "add", "content": "首页「立即体验智障」按钮跳转至大鹏AI智障" },
+        { "type": "add", "content": "支持模型选择：qwen2.5:1.5b / qwen2.5vl:3b" },
+        { "type": "add", "content": "采用 OpenAI 兼容接口（/v1/chat/completions）" },
+        { "type": "add", "content": "自动从 api_config.js 获取本机 IP 地址" },
+        { "type": "add", "content": "实时状态检测：在线/离线/思考中（绿色/红色/黄色指示灯）" },
+        { "type": "add", "content": "对话界面：用户消息在右侧（蓝色气泡），AI 回复在左侧（紫色气泡）" },
+        { "type": "add", "content": "AI 回复自带 20% 概率随机吐槽（智障特色）" },
+        { "type": "add", "content": "星空粒子背景，与官网风格统一" },
+        { "type": "add", "content": "模型切换自动重新检测服务状态" },
+        { "type": "add", "content": "键盘回车快捷发送" },
+        { "type": "fix", "content": "修复状态检测失败导致按钮无响应的问题" },
+        { "type": "fix", "content": "修复 async/await 在部分浏览器不兼容的问题" }
+    ]
+},
+{
+    "version": "v2.7.1",
+    "date": "2026-07-25",
+    "summary": "🧠 大鹏AI智障 · 交互体验优化",
+    "details": [
+        { "type": "upgrade", "content": "进入AI智障页面弹窗升级为智障计算器同款样式（缩放动画+毛玻璃）" },
+        { "type": "upgrade", "content": "模型选择器从原生 select 改为自定义下拉菜单（仿官网展开栏）" },
+        { "type": "add", "content": "下拉菜单展开/折叠动画：缩放+位移+箭头旋转" },
+        { "type": "add", "content": "当前选中模型显示 ✓ 标记" },
+        { "type": "add", "content": "点击页面空白自动关闭下拉菜单" },
+        { "type": "optimize", "content": "模型切换后自动重新检测 Ollama 状态" }
+    ]
+},
+{
+    "version": "v2.7.2",
+    "date": "2026-07-25",
+    "summary": "🧠 大鹏AI智障 · 弹窗样式统一",
+    "details": [
+        { "type": "upgrade", "content": "弹窗样式完全匹配智障计算器（`.pop-overlay` + `.pop-box`）" },
+        { "type": "upgrade", "content": "弹窗动画统一：scale(0.8) rotate(-3deg) → scale(1) rotate(0)" },
+        { "type": "add", "content": "弹窗支持 ESC 键关闭" },
+        { "type": "add", "content": "弹窗支持点击遮罩关闭" },
+        { "type": "optimize", "content": "弹窗改为预置 HTML 结构，不再由 JS 动态创建" },
+        { "type": "enhance", "content": "弹窗交互反馈统一：取消/知道了/遮罩/ESC" }
+    ]
+},
+{
+    "version": "v2.7.3",
+    "date": "2026-07-25",
+    "summary": "🧠 大鹏AI智障 · 状态点击弹窗",
+    "details": [
+        { "type": "add", "content": "点击右上角状态指示灯（在线/离线/思考中）弹出状态详情弹窗" },
+        { "type": "add", "content": "在线状态弹窗：显示 Ollama 地址 + 当前模型 + 服务状态" },
+        { "type": "add", "content": "离线状态弹窗：显示地址 + 排查指引（启动/端口/防火墙）" },
+        { "type": "add", "content": "思考中状态弹窗：显示 AI 正在生成回复提示" },
+        { "type": "enhance", "content": "状态栏增加点击交互反馈" }
+    ]
+}
+    ]
+}
