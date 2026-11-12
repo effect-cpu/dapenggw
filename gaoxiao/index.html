@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>😂 搞笑条目 · 大鹏官网</title>
+    <script src="../api_config.js" onerror="console.warn('未找到 api_config.js')"></script>
+    <style>
+        /* ===== 1. 重置 & 基础 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e1a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.6s ease;
+        }
+
+        /* ===== 2. 星空背景 ===== */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background: radial-gradient(ellipse at bottom, #0a0e1a 0%, #02040a 100%);
+        }
+
+        /* ===== 3. 顶部导航 ===== */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(10, 14, 26, 0.55);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            height: 56px;
+        }
+
+        .top-bar .back-btn {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
+            padding: 5px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 30px;
+            cursor: pointer;
+            background: transparent;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .top-bar .back-btn:hover {
+            color: #fff;
+            border-color: rgba(65, 95, 255, 0.3);
+            background: rgba(65, 95, 255, 0.05);
+        }
+
+        .top-bar .logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #fff 30%, #415fff 50%, #fff 70%);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: logoShine 4s ease-in-out infinite;
+        }
+
+        @keyframes logoShine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .top-bar .logo span {
+            -webkit-text-fill-color: #415fff;
+            background: none;
+        }
+
+        .top-bar .logo small {
+            font-size: 11px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.15);
+            margin-left: 6px;
+            -webkit-text-fill-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .top-bar .counter {
+            margin-left: auto;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.12);
+            font-family: monospace;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 2px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        /* ===== 4. 主容器 ===== */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 80px 16px 60px;
+        }
+
+        /* ===== 5. 标题区 ===== */
+        .hero-title {
+            text-align: center;
+            margin-bottom: 24px;
+            animation: fadeUp 0.8s ease 0.2s both;
+        }
+
+        .hero-title .badge {
+            display: inline-block;
+            padding: 5px 22px;
+            background: rgba(65, 95, 255, 0.15);
+            border: 1px solid rgba(65, 95, 255, 0.25);
+            border-radius: 40px;
+            color: #a8b8ff;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+            animation: badgeBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes badgeBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .hero-title h1 {
+            font-size: 38px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff 20%, #415fff 45%, #6C2BD9 65%, #fff 90%);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleFlow 6s ease-in-out infinite;
+        }
+
+        @keyframes titleFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero-title p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 1px;
+        }
+
+        /* ================================================================
+           6. 折叠按钮（只管官方条目）
+           ================================================================ */
+        .collapse-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 18px;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 0.8s ease 0.35s both;
+            margin-bottom: 14px;
+        }
+
+        .collapse-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(65, 95, 255, 0.06), rgba(108, 43, 217, 0.03));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .collapse-btn:hover {
+            background: rgba(255, 255, 255, 0.045);
+            border-color: rgba(65, 95, 255, 0.2);
+            color: #fff;
+            box-shadow: 0 6px 26px rgba(0, 0, 0, 0.15);
+        }
+
+        .collapse-btn:hover::before { opacity: 1; }
+
+        .collapse-btn:active { transform: scale(0.99); }
+
+        .collapse-btn .cb-arrow {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.3);
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+            display: inline-block;
+        }
+
+        .collapse-btn.open .cb-arrow {
+            transform: rotate(180deg);
+            color: #7b93ff;
+        }
+
+        .collapse-btn .cb-text {
+            flex: 1;
+            text-align: left;
+            position: relative;
+            z-index: 1;
+        }
+
+        .collapse-btn .cb-hint {
+            font-size: 10px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.15);
+            margin-left: 6px;
+        }
+
+        .collapse-btn .cb-count {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 11px;
+            border-radius: 30px;
+            background: rgba(65, 95, 255, 0.14);
+            color: #7b93ff;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .collapse-btn .cb-count.mine {
+            background: rgba(108, 43, 217, 0.22);
+            color: #c9a8ff;
+        }
+
+        /* ================================================================
+           7. 加载 / 空状态
+           ================================================================ */
+        .feed-state {
+            text-align: center;
+            padding: 46px 20px;
+            color: rgba(255, 255, 255, 0.12);
+            font-size: 13px;
+            letter-spacing: 2px;
+            line-height: 2;
+        }
+
+        .feed-state .fs-spinner {
+            display: inline-block;
+            width: 26px;
+            height: 26px;
+            border: 2px solid rgba(65, 95, 255, 0.1);
+            border-top-color: #415fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ================================================================
+           8. 帖子流
+           ================================================================ */
+        .post-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .post-card {
+            background: rgba(255, 255, 255, 0.022);
+            border: 1px solid rgba(255, 255, 255, 0.035);
+            border-radius: 16px;
+            padding: 14px 16px 12px;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(16px);
+            position: relative;
+            overflow: hidden;
+            /* ⚠️ 这里不设 max-height：帖子内容(多图/长文)必须完整显示。
+               折叠时的动画高度由 JS 动态写到 inline style，见 applyCollapsed() */
+            transition:
+                max-height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.35s ease,
+                transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                margin 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                padding 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                border-width 0.3s ease,
+                background 0.35s ease,
+                border-color 0.35s ease,
+                box-shadow 0.35s ease;
+        }
+
+        /* 入场（JS 逐个加） */
+        .post-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 🚫 折叠态：官方条目被收起 */
+        .post-card.is-collapsed {
+            /* max-height 由 JS 动态控制（见 applyCollapsed），这里不写死 */
+            opacity: 0 !important;
+            transform: scale(0.94) translateY(-6px) !important;
+            margin-bottom: -14px !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            border-top-width: 0 !important;
+            border-bottom-width: 0 !important;
+            pointer-events: none !important;
+        }
+
+        .post-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(65, 95, 255, 0.05), rgba(108, 43, 217, 0.025));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .post-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(65, 95, 255, 0.16);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
+        }
+
+        .post-card:hover::before { opacity: 1; }
+
+        .post-card:active {
+            transform: scale(0.995);
+            transition-duration: 0.06s;
+        }
+
+        /* ===== 🆕 自己加的帖子：紫色高亮，永不被折叠 ===== */
+        .post-card.custom-item {
+            background: rgba(108, 43, 217, 0.055);
+            border-color: rgba(108, 43, 217, 0.22);
+        }
+
+        .post-card.custom-item:hover {
+            background: rgba(108, 43, 217, 0.09);
+            border-color: rgba(108, 43, 217, 0.4);
+            box-shadow: 0 12px 36px rgba(108, 43, 217, 0.12);
+        }
+
+        .post-card.custom-item .post-avatar {
+            background: rgba(108, 43, 217, 0.2);
+            border-color: rgba(108, 43, 217, 0.3);
+        }
+
+        .post-badge-mine {
+            font-size: 9px;
+            padding: 2px 8px;
+            border-radius: 30px;
+            background: rgba(108, 43, 217, 0.28);
+            color: #d3b8ff;
+            border: 1px solid rgba(108, 43, 217, 0.35);
+            flex-shrink: 0;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== 帖子头部：作者 + 时间 ===== */
+        .post-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .post-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            flex-shrink: 0;
+            background: rgba(65, 95, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .post-card:hover .post-avatar {
+            transform: scale(1.08) rotate(-5deg);
+        }
+
+        /* 🖼️ 图片头像（相对路径 / 绝对 URL） */
+        .post-avatar.has-img {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .post-card.custom-item .post-avatar.has-img {
+            background: rgba(108, 43, 217, 0.18);
+        }
+
+        .post-avatar.has-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 50%;
+        }
+
+        .post-meta {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .post-author {
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.82);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .post-author .verified {
+            font-size: 9px;
+            color: #fff;
+            background: #415fff;
+            border-radius: 50%;
+            width: 13px;
+            height: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: 700;
+        }
+
+        .post-author .verified.mine {
+            background: #6C2BD9;
+        }
+
+        .post-time {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.2);
+            margin-top: 2px;
+            font-variant-numeric: tabular-nums;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .post-time .dot-sep {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            display: inline-block;
+        }
+
+        .post-tag {
+            font-size: 10px;
+            padding: 2px 10px;
+            border-radius: 30px;
+            background: rgba(65, 95, 255, 0.12);
+            color: #7b93ff;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .post-tag.hot {
+            background: rgba(255, 77, 79, 0.12);
+            color: #ff7875;
+        }
+
+        .post-tag.new {
+            background: rgba(108, 43, 217, 0.2);
+            color: #b98cff;
+        }
+
+        /* ===== 帖子标题 ===== */
+        .post-title {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.45;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .post-text {
+            font-size: 13px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.35);
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== 🖼️ 图片区（帖子可以是图片） ===== */
+        .post-image {
+            position: relative;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            z-index: 1;
+            cursor: zoom-in;
+            line-height: 0;
+        }
+
+        .post-image img {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: auto;
+            /* 不裁剪、不限制高度：图片按原始比例全部展示 */
+            max-height: none;
+            object-fit: contain;
+            display: block;
+            animation: imgFadeIn 0.55s ease both;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes imgFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .post-card:hover .post-image img {
+            transform: scale(1.025);
+        }
+
+        /* 图片加载中骨架（在图片下方，图片一出现就被盖住） */
+        .post-image .img-skeleton {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            min-height: 140px;
+            background: linear-gradient(90deg,
+                rgba(255, 255, 255, 0.02) 25%,
+                rgba(255, 255, 255, 0.05) 50%,
+                rgba(255, 255, 255, 0.02) 75%);
+            background-size: 200% 100%;
+            animation: imgSkeleton 1.8s ease-in-out infinite;
+        }
+
+        @keyframes imgSkeleton {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* 图片缩放提示 */
+        .post-image::after {
+            content: '🔍';
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            font-size: 11px;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 2px 8px;
+            border-radius: 6px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            line-height: 1.6;
+        }
+
+        .post-card:hover .post-image::after {
+            opacity: 1;
+        }
+
+        /* ===== 视频区 ===== */
+        /* 占位框（没有视频时）：固定 16:9 */
+        .post-video {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #101425, #171b2e);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            z-index: 1;
+        }
+
+        /* 🎬 真视频：不强制比例，按视频自己的比例走 */
+        .post-video.has-video {
+            aspect-ratio: auto;
+            min-height: 120px;
+            background: transparent;
+            border: none;
+            line-height: 0;
+        }
+
+        .post-video video {
+            width: 100%;
+            height: auto;
+            max-height: 72vh;
+            object-fit: contain;
+            display: block;
+            background: #000;
+            border-radius: 12px;
+        }
+
+        /* 视频占位（无视频时） */
+        .video-ph {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background:
+                radial-gradient(circle at 50% 42%, rgba(65, 95, 255, 0.14), transparent 62%),
+                radial-gradient(circle at 80% 80%, rgba(108, 43, 217, 0.1), transparent 55%);
+            overflow: hidden;
+        }
+
+        .post-card.custom-item .video-ph {
+            background:
+                radial-gradient(circle at 50% 42%, rgba(108, 43, 217, 0.18), transparent 62%),
+                radial-gradient(circle at 80% 80%, rgba(65, 95, 255, 0.08), transparent 55%);
+        }
+
+        .video-ph::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            left: -60%;
+            width: 220%;
+            height: 220%;
+            background: linear-gradient(115deg,
+                transparent 42%,
+                rgba(65, 95, 255, 0.05) 48%,
+                rgba(255, 255, 255, 0.04) 52%,
+                transparent 58%);
+            animation: phSweep 5s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes phSweep {
+            0% { transform: translateX(-30%); }
+            100% { transform: translateX(30%); }
+        }
+
+        .video-ph .ph-play {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            color: rgba(255, 255, 255, 0.45);
+            padding-left: 3px;
+            backdrop-filter: blur(6px);
+            transition: all 0.4s ease;
+            animation: playBreathe 2.6s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes playBreathe {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(65, 95, 255, 0.15); }
+            50% { box-shadow: 0 0 0 12px rgba(65, 95, 255, 0); }
+        }
+
+        .post-card:hover .video-ph .ph-play {
+            background: rgba(65, 95, 255, 0.2);
+            border-color: rgba(65, 95, 255, 0.35);
+            color: #fff;
+            transform: scale(1.06);
+        }
+
+        .video-ph .ph-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .video-ph .ph-dur {
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            font-size: 10px;
+            font-family: monospace;
+            color: rgba(255, 255, 255, 0.4);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1px 7px;
+            border-radius: 5px;
+            backdrop-filter: blur(4px);
+            z-index: 1;
+        }
+
+        /* ===== 帖子底部 ===== */
+        .post-foot {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.16);
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.025);
+            position: relative;
+            z-index: 1;
+        }
+
+        .post-foot .pf-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .post-card:hover .post-foot .pf-item {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .post-foot .pf-more {
+            margin-left: auto;
+            color: rgba(65, 95, 255, 0.5);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .post-card.custom-item .post-foot .pf-more {
+            color: rgba(108, 43, 217, 0.6);
+        }
+
+        .post-card:hover .post-foot .pf-more {
+            color: #7b93ff;
+            transform: translateX(3px);
+        }
+
+        .post-card.custom-item:hover .post-foot .pf-more {
+            color: #c9a8ff;
+        }
+
+        /* ===== 9. 底部说明 ===== */
+        .footer-note {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.08);
+            letter-spacing: 2px;
+            line-height: 2;
+        }
+
+        /* ===== 10. 弹窗 ===== */
+        .pop-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .pop-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .pop-box {
+            width: 340px;
+            max-width: 92vw;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(24px);
+            border-radius: 20px;
+            overflow: hidden;
+            transform: scale(0.8) rotate(-3deg);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+        }
+
+        .pop-box.show {
+            opacity: 1;
+            transform: scale(1) rotate(0);
+        }
+
+        .pop-box .pop-header {
+            padding: 20px 24px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            margin: 0 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .pop-box .pop-header .pop-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+        }
+
+        .pop-box .pop-header .pop-icon img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .pop-box .pop-header .pop-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.4;
+        }
+
+        .pop-box .pop-header .pop-title small {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 1px;
+        }
+
+        .pop-box .pop-body {
+            padding: 30px 26px 26px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            line-height: 1.75;
+            text-align: center;
+            white-space: pre-line;
+            max-height: 58vh;
+            overflow-y: auto;
+        }
+
+        .pop-box .pop-body .pop-emoji {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 8px;
+            animation: popEmoji 1.6s ease-in-out infinite;
+        }
+
+        /* 弹窗里的大图标（图片头像） */
+        .pop-box .pop-body img.pop-emoji {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 10px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        @keyframes popEmoji {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.08) rotate(4deg); }
+        }
+
+        .pop-box .pop-body .pop-sub {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.18);
+            margin-top: 10px;
+            display: block;
+        }
+
+        /* 🆕 弹窗内容：只显示 标题 + 时间 */
+        .pop-box .pop-body .pop-post-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.55;
+            margin-bottom: 12px;
+            word-break: break-word;
+        }
+
+        .pop-box .pop-body .pop-post-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.32);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.5px;
+        }
+
+        .pop-box .pop-body::-webkit-scrollbar { width: 3px; }
+        .pop-box .pop-body::-webkit-scrollbar-thumb {
+            background: rgba(65, 95, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .pop-box .pop-footer {
+            display: flex;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .pop-box .pop-footer button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.5px;
+            font-family: inherit;
+        }
+
+        .pop-box .pop-footer button:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: #fff;
+        }
+
+        .pop-box .pop-footer .btn-primary {
+            background: rgba(65, 95, 255, 0.15);
+            color: #7b93ff;
+            border-radius: 0 0 20px 0;
+        }
+
+        .pop-box .pop-footer .btn-primary:hover {
+            background: rgba(65, 95, 255, 0.25);
+            color: #fff;
+        }
+
+        /* ===== 10.5 图片全屏预览（Lightbox） ===== */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.93);
+            backdrop-filter: blur(14px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+
+        .lightbox.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .lightbox img {
+            max-width: 96vw;
+            max-height: 88vh;
+            object-fit: contain;
+            border-radius: 10px;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+        }
+
+        .lightbox.show img {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .lightbox .lb-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 17px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            backdrop-filter: blur(8px);
+        }
+
+        .lightbox .lb-close:hover {
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .lightbox .lb-hint {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.22);
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+
+        /* ===== 11. 动画 ===== */
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(24px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== 12. 响应式 ===== */
+        @media (max-width: 600px) {
+            .top-bar { padding: 8px 12px; height: 48px; }
+            .top-bar .logo { font-size: 15px; }
+            .container { padding: 66px 12px 50px; }
+            .hero-title h1 { font-size: 27px; }
+            .hero-title p { font-size: 12px; }
+            .collapse-btn { padding: 11px 14px; font-size: 13px; }
+            .collapse-btn .cb-hint { display: none; }
+            .post-card { padding: 12px 13px 10px; }
+            .post-avatar { width: 32px; height: 32px; font-size: 17px; }
+            .post-title { font-size: 15px; }
+            .post-text { font-size: 12px; }
+            .post-tag { display: none; }
+            .video-ph .ph-play { width: 40px; height: 40px; font-size: 15px; }
+            .pop-box { width: 300px; }
+            .pop-box .pop-body { font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 星空背景 ===== -->
+    <canvas id="starfield"></canvas>
+
+    <!-- ===== 顶部导航 ===== -->
+    <div class="top-bar">
+        <button class="back-btn" id="backBtn">‹ 返回</button>
+        <div class="logo">大鹏<span>.</span>搞笑 <small>反向旗舰</small></div>
+        <span class="counter" id="counter">😂 0 条</span>
+    </div>
+
+    <!-- ===== 主容器 ===== -->
+    <div class="container">
+
+        <!-- 标题 -->
+        <div class="hero-title">
+            <div class="badge">😂 官方认证 · 反向资料库</div>
+            <h1>大鹏搞笑条目</h1>
+            <p>数据来源 posts.json · 按时间降序</p>
+        </div>
+
+        <!-- ===== 折叠按钮（只折叠官方条目） ===== -->
+        <button class="collapse-btn open" id="collapseBtn">
+            <span class="cb-arrow" id="cbArrow">▼</span>
+            <span class="cb-text">
+                <span id="cbText">收起官方条目</span>
+                <span class="cb-hint" id="cbHint">自己的帖子不受影响</span>
+            </span>
+            <span class="cb-count" id="cbCount">0</span>
+            <span class="cb-count mine" id="cbMineCount" style="display:none;">0</span>
+        </button>
+
+        <!-- ===== 帖子流 ===== -->
+        <div class="post-feed" id="postFeed">
+            <div class="feed-state">
+                <div class="fs-spinner"></div>
+                <div>正在读取 posts.json …</div>
+            </div>
+        </div>
+
+        <!-- 底部 -->
+        <div class="footer-note">
+            —— 大鹏科技 · 反向旗舰 ——<br>
+            本页面内容纯属整活，请勿当真（真的别当真）
+        </div>
+
+    </div>
+
+    <!-- ===== 弹窗 ===== -->
+    <div class="pop-overlay" id="popOverlay">
+        <div class="pop-box" id="popBox">
+            <div class="pop-body" id="popBody">
+                <div id="popMessage">加载中...</div>
+            </div>
+            <div class="pop-footer">
+                <button class="btn-primary" id="popConfirm">笑到了</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 🖼️ 图片全屏预览（必须在 script 之前） ===== -->
+    <div class="lightbox" id="lightbox">
+        <button class="lb-close" id="lbClose">✕</button>
+        <img id="lightboxImg" alt="">
+        <span class="lb-hint">点击任意处关闭</span>
+    </div>
+
+    <script>
+        // ================================================================
+        // 1. 星空背景
+        // ================================================================
+        var canvas = document.getElementById('starfield');
+        var ctx = canvas.getContext('2d');
+        var w, h, stars;
+
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        stars = [];
+        for (var i = 0; i < 130; i++) {
+            stars.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                r: Math.random() * 1.4 + 0.4,
+                dx: (Math.random() - 0.5) * 0.25,
+                dy: (Math.random() - 0.5) * 0.25,
+                o: Math.random() * 0.5 + 0.2,
+                phase: Math.random() * Math.PI * 2,
+                speed: Math.random() * 0.5 + 0.3
+            });
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, w, h);
+            var now = Date.now() / 1000;
+            for (var i = 0; i < stars.length; i++) {
+                var s = stars[i];
+                s.x += s.dx;
+                s.y += s.dy;
+                if (s.x < 0) s.x = w;
+                if (s.x > w) s.x = 0;
+                if (s.y < 0) s.y = h;
+                if (s.y > h) s.y = 0;
+                var breathe = Math.sin(now * s.speed + s.phase) * 0.5 + 0.5;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,' + (s.o * (0.5 + 0.5 * breathe)) + ')';
+                ctx.fill();
+            }
+            requestAnimationFrame(drawStars);
+        }
+        drawStars();
+
+        // ================================================================
+        // 2. 官方作者名单
+        //    → 名单里的作者 = 官方条目（会被折叠）
+        //    → 不在名单里的作者 = 自己加的（永不折叠）
+        //    → 也可在 JSON 里显式写 "custom": true / "official": false
+        // ================================================================
+        var OFFICIAL_WRITERS = [
+            '大鹏品牌部',
+            '大鹏商城运营',
+            '小雕电竞品牌部',
+            '大鹏运维组',
+            '大鹏计算器项目组',
+            '大鹏工业设计部',
+            '大鹏影像实验室',
+            '大鹏充电事业部',
+            '大鹏反向数学研究院',
+            '大鹏科技观察员',
+            '大鹏音乐前端',
+            '大鹏 AI 团队',
+            '大鹏AI团队'
+        ];
+
+        // 是否为自己加的帖子
+        function isCustomPost(p) {
+            // 1. 显式标记优先
+            if (p.custom === true) return true;
+            if (p.custom === false) return false;
+            if (p.official === true) return false;
+            if (p.official === false) return true;
+            if (p.type === 'custom' || p.type === 'user' || p.type === 'mine') return true;
+
+            // 2. 按作者名判断
+            var writer = String(p.writer || '').trim();
+            if (!writer) return true;          // 没写作者 → 当自己的，保险
+            return OFFICIAL_WRITERS.indexOf(writer) === -1;
+        }
+
+        // ================================================================
+        // 3. 数据加载
+        // ================================================================
+        var POSTS_URL = 'posts.json';
+        var posts = [];
+        var officialCount = 0;
+        var customCount = 0;
+
+        function parseTime(v) {
+            if (v === null || v === undefined) return NaN;
+            if (typeof v === 'number') return v;
+
+            var s = String(v).trim();
+            if (!s) return NaN;
+            if (/^\d+$/.test(s)) return parseInt(s, 10);
+
+            var m = s.match(/^(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})(?:[ T,，]+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+            if (m) {
+                var d = new Date(
+                    parseInt(m[1], 10),
+                    parseInt(m[2], 10) - 1,
+                    parseInt(m[3], 10),
+                    parseInt(m[4] || 0, 10),
+                    parseInt(m[5] || 0, 10),
+                    parseInt(m[6] || 0, 10)
+                );
+                return d.getTime();
+            }
+
+            var t = new Date(s).getTime();
+            return isNaN(t) ? NaN : t;
+        }
+
+        function formatTime(v) {
+            var ts = parseTime(v);
+            if (isNaN(ts)) return String(v || '未知时间');
+            var d = new Date(ts);
+            var y = d.getFullYear();
+            var mo = String(d.getMonth() + 1).padStart(2, '0');
+            var da = String(d.getDate()).padStart(2, '0');
+            var hh = String(d.getHours()).padStart(2, '0');
+            var mi = String(d.getMinutes()).padStart(2, '0');
+            var ss = String(d.getSeconds()).padStart(2, '0');
+            return y + '/' + mo + '/' + da + ' ' + hh + ':' + mi + ':' + ss;
+        }
+
+        function sortByTimeDesc(list) {
+            var arr = list.slice();
+            for (var i = 0; i < arr.length; i++) {
+                arr[i]._ts = parseTime(arr[i].time);
+                arr[i]._idx = i;
+            }
+            arr.sort(function (a, b) {
+                var ta = isNaN(a._ts) ? -Infinity : a._ts;
+                var tb = isNaN(b._ts) ? -Infinity : b._ts;
+                if (tb !== ta) return tb - ta;
+                return b._idx - a._idx;
+            });
+            return arr;
+        }
+
+        function loadPosts() {
+            fetchWithTimeout(POSTS_URL + '?t=' + Date.now(), 8000)
+                .then(function (res) {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.json();
+                })
+                .then(function (data) {
+                    if (!Array.isArray(data)) throw new Error('数据不是数组');
+                    posts = data;
+                    // 渲染异常也给出提示，避免一直卡在"加载中"
+                    try {
+                        renderPosts();
+                    } catch (e) {
+                        console.error('渲染出错：', e);
+                        renderLoadError(e);
+                    }
+                })
+                .catch(function (err) {
+                    console.warn('posts.json 加载失败：', err);
+                    renderLoadError(err);
+                });
+        }
+
+        // 带超时的 fetch，避免一直卡在"加载中"
+        function fetchWithTimeout(url, ms) {
+            return new Promise(function (resolve, reject) {
+                var timer = setTimeout(function () {
+                    reject(new Error('请求超时（' + (ms / 1000) + ' 秒），文件可能不存在或路径错误'));
+                }, ms);
+
+                fetch(url, { cache: 'no-store' })
+                    .then(function (res) {
+                        clearTimeout(timer);
+                        resolve(res);
+                    })
+                    .catch(function (e) {
+                        clearTimeout(timer);
+                        reject(e);
+                    });
+            });
+        }
+
+        // ================================================================
+        // 4. DOM
+        // ================================================================
+        var postFeed = document.getElementById('postFeed');
+        var collapseBtn = document.getElementById('collapseBtn');
+        var cbText = document.getElementById('cbText');
+        var cbHint = document.getElementById('cbHint');
+        var cbCount = document.getElementById('cbCount');
+        var cbMineCount = document.getElementById('cbMineCount');
+        var counterEl = document.getElementById('counter');
+
+        var popOverlay = document.getElementById('popOverlay');
+        var popBox = document.getElementById('popBox');
+        var popMessage = document.getElementById('popMessage');
+        var popConfirm = document.getElementById('popConfirm');
+
+        // ================================================================
+        // 5. 渲染
+        // ================================================================
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.textContent = text == null ? '' : String(text);
+            return div.innerHTML;
+        }
+
+        // ================================================================
+        // 🖼️ 头像：支持 emoji 或 图片相对路径
+        //    "🧋"                        → 文字头像
+        //    "avatars/naicha.svg"        → 图片头像
+        //    "../assets/a.png"           → 图片头像（上一层）
+        //    "https://xxx/a.jpg"         → 网络头像
+        // ================================================================
+        var AVATAR_FALLBACK = '😂';
+
+        function isImagePath(v) {
+            if (v === null || v === undefined) return false;
+            var s = String(v).trim();
+            if (!s) return false;
+            if (/^data:image\//i.test(s)) return true;                 // data URI
+            if (/^(https?:)?\/\//i.test(s)) return true;               // 网络地址
+            if (/^\.{0,2}\//.test(s)) return true;                     // ./ ../ /
+            if (/\.(png|jpe?g|gif|webp|svg|bmp|avif|ico)([\?#].*)?$/i.test(s)) return true;  // 带扩展名
+            return false;
+        }
+
+        function buildAvatarHtml(avatar, extraClass) {
+            var cls = 'post-avatar' + (extraClass ? ' ' + extraClass : '');
+
+            if (isImagePath(avatar)) {
+                return '<div class="' + cls + ' has-img" data-fallback="' + escapeHtml(AVATAR_FALLBACK) + '">' +
+                       '<img src="' + escapeHtml(String(avatar).trim()) + '" alt="">' +
+                       '</div>';
+            }
+
+            return '<div class="' + cls + '">' + escapeHtml(avatar || AVATAR_FALLBACK) + '</div>';
+        }
+
+        // 图片加载失败 → 自动降级成 emoji
+        function bindAvatarFallback(root) {
+            var imgs = root.querySelectorAll('.post-avatar.has-img img');
+            for (var i = 0; i < imgs.length; i++) {
+                imgs[i].onerror = function () {
+                    var box = this.parentNode;
+                    if (!box) return;
+                    var fb = box.getAttribute('data-fallback') || AVATAR_FALLBACK;
+                    box.classList.remove('has-img');
+                    box.textContent = fb;
+                };
+            }
+        }
+
+        // ================================================================
+        // 媒体区：支持 图片(单张/多张) / 视频 / 占位
+        //   image: "images/a.png"                 → 一张图
+        //   image: ["images/a.png","images/b.png"] → 多图全部展示
+        //   video: "videos/a.mp4"                 → 视频
+        //   都有 → 图片(全部) + 视频
+        //   都没有 → 视频占位框
+        // ================================================================
+        function buildMedia(item) {
+            var html = '';
+            var imgField = item.image;
+            var vid = item.video;
+            var hasMedia = false;
+
+            // 🖼️ 图片（字符串 或 数组，全部展示）
+            if (imgField) {
+                var imgList = Array.isArray(imgField) ? imgField : [imgField];
+                for (var ii = 0; ii < imgList.length; ii++) {
+                    var one = imgList[ii];
+                    if (one === null || one === undefined) continue;
+                    if (String(one).trim() === '') continue;
+
+                    hasMedia = true;
+                    var nameInGroup = imgList.length > 1
+                        ? '（' + (ii + 1) + '/' + imgList.length + '）'
+                        : '';
+                    var imgSrc = escapeHtml(String(one).trim());
+
+                    html += '<div class="post-image" data-img="' + imgSrc + '">';
+                    html += '<div class="img-skeleton"></div>';
+                    html += '<img src="' + imgSrc + '" alt="' +
+                            escapeHtml((item.title || '') + nameInGroup) + '" loading="lazy">';
+                    html += '</div>';
+                }
+            }
+
+            // 🎬 视频（有视频才加 has-video，比例按视频自己的来）
+            if (vid && String(vid).trim() !== '') {
+                hasMedia = true;
+                html += '<div class="post-video has-video">';
+                html += '<video controls preload="metadata" playsinline ';
+                if (item.poster) html += 'poster="' + escapeHtml(item.poster) + '" ';
+                html += 'src="' + escapeHtml(String(vid).trim()) + '"></video>';
+                html += '</div>';
+            }
+
+            // 都没有 → 占位
+            if (!hasMedia) {
+                html += '<div class="post-video">';
+                html += '<div class="video-ph">';
+                html += '<div class="ph-play">▶</div>';
+                html += '<div class="ph-label">暂无视频（其实是没钱买流量）</div>';
+                html += '<span class="ph-dur">' + escapeHtml(item.duration || '00:00') + '</span>';
+                html += '</div>';
+                html += '</div>';
+            }
+
+            return html;
+        }
+
+        function renderPosts() {
+            if (!posts || posts.length === 0) {
+                postFeed.innerHTML = '<div class="feed-state">📭 暂无条目</div>';
+                cbCount.textContent = '0';
+                counterEl.textContent = '😂 0 条';
+                return;
+            }
+
+            var sorted = sortByTimeDesc(posts);
+            posts = sorted;
+
+            officialCount = 0;
+            customCount = 0;
+
+            var html = '';
+            for (var i = 0; i < sorted.length; i++) {
+                var p = sorted[i];
+                var mine = isCustomPost(p);
+                if (mine) { customCount++; } else { officialCount++; }
+
+                var tagClass = 'post-tag';
+                if (p.tagType) tagClass += ' ' + p.tagType;
+
+                html += '<article class="post-card' + (mine ? ' custom-item' : ' official-item') +
+                        '" data-index="' + i + '" data-mine="' + (mine ? '1' : '0') + '">';
+
+                // 头部
+                html += '<div class="post-head">';
+                html += buildAvatarHtml(p.avatar);
+                html += '<div class="post-meta">';
+                html += '<div class="post-author">' + escapeHtml(p.writer || '匿名作者');
+                html += '<span class="verified' + (mine ? ' mine' : '') + '">✓</span></div>';
+                html += '<div class="post-time">';
+                html += '<span>' + escapeHtml(formatTime(p.time)) + '</span>';
+                html += '<span class="dot-sep"></span>';
+                html += '<span>' + escapeHtml(p.handle || (mine ? '我的投稿' : '大鹏科技')) + '</span>';
+                html += '</div>';
+                html += '</div>';
+                if (mine) html += '<span class="post-badge-mine">我的</span>';
+                if (p.tag) html += '<span class="' + tagClass + '">' + escapeHtml(p.tag) + '</span>';
+                html += '</div>';
+
+                // 标题
+                var title = p.title || (p.writer ? p.writer + ' 的最新整活' : '大鹏搞笑条目');
+                html += '<h3 class="post-title">' + escapeHtml(title) + '</h3>';
+
+                // 正文
+                if (p.text) {
+                    html += '<div class="post-text">' + escapeHtml(p.text) + '</div>';
+                }
+
+                // 视频 / 图片
+                html += buildMedia(p);
+
+                // 底部
+                html += '<div class="post-foot">';
+                html += '<span class="pf-item">😂 ' + escapeHtml(p.likes || '0') + '</span>';
+                html += '<span class="pf-item">💬 ' + escapeHtml(p.comments || '0') + '</span>';
+                html += '<span class="pf-item pf-more">查看详情 ›</span>';
+                html += '</div>';
+
+                html += '</article>';
+            }
+
+            // 若无自定义帖子，加一个"全部收起提示"占位
+            if (customCount === 0) {
+                html += '<div class="feed-state" id="allCollapsedTip" style="display:none;">' +
+                        '📦 官方条目已全部收起<br>' +
+                        '<span style="font-size:11px;opacity:0.5;">点上方按钮展开</span>' +
+                        '</div>';
+            }
+
+            postFeed.innerHTML = html;
+
+            // 计数
+            cbCount.textContent = '官方 ' + officialCount;
+            counterEl.textContent = '😂 ' + sorted.length + ' 条';
+
+            if (customCount > 0) {
+                cbMineCount.style.display = '';
+                cbMineCount.textContent = '我的 ' + customCount;
+            } else {
+                cbMineCount.style.display = 'none';
+            }
+
+            // 头像图片加载失败 → 降级 emoji
+            bindAvatarFallback(postFeed);
+
+            // 🖼️ 帖子图片：失败降级 + 点击全屏预览
+            //    （图片淡入由 CSS animation 负责，不依赖 onload，避免竞态）
+            var imgWraps = postFeed.querySelectorAll('.post-image');
+            for (var iw = 0; iw < imgWraps.length; iw++) {
+                (function (wrap) {
+                    var im = wrap.querySelector('img');
+                    var sk = wrap.querySelector('.img-skeleton');
+                    if (!im) return;
+
+                    var settled = false;
+
+                    function markLoaded() {
+                        if (settled) return;
+                        settled = true;
+                        if (sk && sk.parentNode) sk.parentNode.removeChild(sk);
+                        // 图片加载完卡片会变高；若之前被 maxHeight 卡住，立刻放开
+                        var card = (wrap.closest ? wrap.closest('.post-card') : null);
+                        if (card && !isCollapsed && card.style.maxHeight) {
+                            card.style.maxHeight = '';
+                        }
+                    }
+
+                    function markFailed() {
+                        if (settled) return;
+                        settled = true;
+                        if (sk && sk.parentNode) sk.parentNode.removeChild(sk);
+                        wrap.onclick = null;
+                        wrap.classList.remove('post-image');
+                        wrap.classList.add('post-video');
+                        wrap.style.cursor = 'default';
+                        wrap.innerHTML = '<div class="video-ph">' +
+                            '<div class="ph-play">▶</div>' +
+                            '<div class="ph-label">图片加载失败，检查路径对不对</div>' +
+                            '</div>';
+                    }
+
+                    // 关键：图片可能已经加载完成（本地小图常见），此时 onload 不再触发
+                    if (im.complete) {
+                        if (im.naturalWidth > 0) {
+                            markLoaded();
+                        } else {
+                            markFailed();
+                        }
+                    } else {
+                        im.onload = markLoaded;
+                        im.onerror = markFailed;
+                    }
+
+                    wrap.onclick = function (e) {
+                        e.stopPropagation();
+                        openLightbox(wrap.getAttribute('data-img') || im.src);
+                    };
+                })(imgWraps[iw]);
+            }
+
+            // 视频降级
+            var videos = postFeed.querySelectorAll('.post-video video');
+            for (var v = 0; v < videos.length; v++) {
+                videos[v].addEventListener('error', function () {
+                    var wrap = this.parentNode;
+                    wrap.innerHTML = '<div class="video-ph">' +
+                        '<div class="ph-play">▶</div>' +
+                        '<div class="ph-label">视频加载失败（大鹏科技常态）</div>' +
+                        '<span class="ph-dur">--:--</span>' +
+                        '</div>';
+                });
+            }
+
+            // 卡片点击
+            var cards = postFeed.querySelectorAll('.post-card');
+            for (var c = 0; c < cards.length; c++) {
+                cards[c].addEventListener('click', function (e) {
+                    if (e.target.closest && e.target.closest('.post-video, .post-image')) return;
+                    var idx = parseInt(this.dataset.index, 10);
+                    showDetail(idx);
+                });
+            }
+
+            // 入场动画
+            for (var k = 0; k < cards.length; k++) {
+                (function (el, idx) {
+                    setTimeout(function () { el.classList.add('visible'); }, idx * 35);
+                })(cards[k], k);
+            }
+
+            // 恢复折叠状态（重新渲染后保持）
+            applyCollapsed();
+        }
+
+        function renderLoadError(err) {
+            postFeed.innerHTML =
+                '<div class="feed-state" style="color:rgba(255,77,79,0.5);">' +
+                '⚠️ posts.json 加载失败<br>' +
+                '<span style="font-size:11px;opacity:0.6;">' + escapeHtml(err && err.message ? err.message : '未知错误') + '</span><br>' +
+                '<span style="font-size:11px;opacity:0.5;">请确认文件与 index.html 同级，且通过 HTTP 访问</span>' +
+                '</div>';
+            cbCount.textContent = '0';
+            counterEl.textContent = '😂 0 条';
+        }
+
+        // ================================================================
+        // 6. 折叠：只作用于官方条目
+        // ================================================================
+        var isCollapsed = false;
+
+        function applyCollapsed() {
+            var cards = postFeed.querySelectorAll('.post-card');
+            for (var i = 0; i < cards.length; i++) {
+                (function (card) {
+                    // 自己的帖子：永远不折叠，高度完全放开
+                    if (card.dataset.mine === '1') {
+                        card.classList.remove('is-collapsed');
+                        card.style.maxHeight = '';
+                        return;
+                    }
+
+                    if (isCollapsed) {
+                        // 折叠：先把真实高度写死，再收到 0（过渡才顺滑）
+                        card.style.maxHeight = card.scrollHeight + 'px';
+                        void card.offsetHeight;
+                        card.classList.add('is-collapsed');
+                        card.style.maxHeight = '0px';
+                    } else {
+                        // 展开：只有确实被折叠过才恢复，避免影响完整显示
+                        if (card.classList.contains('is-collapsed') || card.style.maxHeight) {
+                            card.classList.remove('is-collapsed');
+                            card.style.maxHeight = card.scrollHeight + 'px';
+                            setTimeout(function () {
+                                if (!isCollapsed) card.style.maxHeight = '';
+                            }, 470);
+                        }
+                    }
+                })(cards[i]);
+            }
+
+            // 全部收起提示
+            var tip = document.getElementById('allCollapsedTip');
+            if (tip) {
+                tip.style.display = (isCollapsed && customCount === 0) ? 'block' : 'none';
+            }
+
+            // 按钮状态
+            if (isCollapsed) {
+                collapseBtn.classList.remove('open');
+                cbText.textContent = '展开官方条目';
+                cbHint.textContent = officialsHiddenHint();
+            } else {
+                collapseBtn.classList.add('open');
+                cbText.textContent = '收起官方条目';
+                cbHint.textContent = customCount > 0 ? '自己的 ' + customCount + ' 条不受影响' : '自己的帖子不受影响';
+            }
+        }
+
+        function officialsHiddenHint() {
+            return officialCount > 0 ? '已收起 ' + officialCount + ' 条' : '';
+        }
+
+        collapseBtn.addEventListener('click', function () {
+            isCollapsed = !isCollapsed;
+            applyCollapsed();
+        });
+
+        // ================================================================
+        // 7. 弹窗
+        // ================================================================
+        function showDetail(index) {
+            var p = posts[index];
+            if (!p) return;
+
+            // 🆕 弹窗只显示：标题 + 时间
+            //（不显示头像 / 作者名 / 我的投稿 / 大 emoji）
+            var postTitle = p.title || (p.writer ? p.writer + ' 的最新整活' : '大鹏搞笑条目');
+
+            var body = '';
+            body += '<div class="pop-post-title">' + escapeHtml(postTitle) + '</div>';
+            body += '<div class="pop-post-time">🕒 ' + escapeHtml(formatTime(p.time)) + '</div>';
+
+            popMessage.innerHTML = body;
+            popMessage.style.textAlign = 'center';
+
+            popOverlay.classList.add('show');
+            popBox.classList.add('show');
+        }
+
+        function closePopup() {
+            popOverlay.classList.remove('show');
+            popBox.classList.remove('show');
+        }
+
+        popConfirm.onclick = closePopup;
+
+        popOverlay.onclick = function (e) {
+            if (e.target === popOverlay) closePopup();
+        };
+
+        // ================================================================
+        // 🖼️ 图片全屏预览
+        // ================================================================
+        var lightbox = document.getElementById('lightbox');
+        var lightboxImg = document.getElementById('lightboxImg');
+        var lbClose = document.getElementById('lbClose');
+
+        function openLightbox(src) {
+            if (!src || !lightbox || !lightboxImg) {
+                console.warn('lightbox 元素缺失，无法预览');
+                return;
+            }
+            lightboxImg.src = src;
+            lightbox.classList.add('show');
+        }
+
+        function closeLightbox() {
+            if (!lightbox) return;
+            lightbox.classList.remove('show');
+            setTimeout(function () {
+                if (!lightbox.classList.contains('show') && lightboxImg) lightboxImg.src = '';
+            }, 380);
+        }
+
+        if (lightbox) {
+            lightbox.onclick = function (e) {
+                if (e.target === lightboxImg) return;   // 点图片本身不关
+                closeLightbox();
+            };
+        }
+
+        if (lbClose) {
+            lbClose.onclick = function (e) {
+                e.stopPropagation();
+                closeLightbox();
+            };
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                if (lightbox && lightbox.classList.contains('show')) {
+                    closeLightbox();
+                } else {
+                    closePopup();
+                }
+            }
+        });
+
+        // ================================================================
+        // 8. 返回
+        // ================================================================
+        document.getElementById('backBtn').onclick = function (e) {
+            e.preventDefault();
+            var path = window.location.pathname;
+            var base = path.replace(/gaoxiao\/?.*$/, '');
+            if (base && base !== path) {
+                window.location.href = base;
+            } else {
+                window.history.back();
+            }
+        };
+
+        // ================================================================
+        // 9. 启动
+        // ================================================================
+        loadPosts();
+
+        console.log('😂 大鹏搞笑条目已启动 · 数据源 ' + POSTS_URL);
+    </script>
+
+</body>
+</html>

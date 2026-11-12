@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1226"/>
+      <stop offset="55%" stop-color="#131a35"/>
+      <stop offset="100%" stop-color="#1a1040"/>
+    </linearGradient>
+    <linearGradient id="acc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#415fff"/>
+      <stop offset="100%" stop-color="#6C2BD9"/>
+    </linearGradient>
+    <linearGradient id="txt" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="45%" stop-color="#8fa3ff"/>
+      <stop offset="70%" stop-color="#6C2BD9"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#415fff" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#415fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bg)"/>
+  <circle cx="660" cy="70" r="240" fill="url(#glow)"/>
+  <circle cx="110" cy="400" r="180" fill="url(#glow)" opacity="0.55"/>
+
+  <!-- 顶部品牌 -->
+  <text x="400" y="62" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
+        font-size="17" fill="#8fa3ff" letter-spacing="7" opacity="0.85">大鹏科技 · 反向旗舰</text>
+
+  <!-- 电池 -->
+  <g transform="translate(300, 108)">
+    <rect x="0" y="0" width="196" height="108" rx="18" fill="none"
+          stroke="#ffffff" stroke-opacity="0.45" stroke-width="6"/>
+    <rect x="202" y="34" width="14" height="40" rx="6" fill="#ffffff" fill-opacity="0.45"/>
+    <!-- 电量 1% -->
+    <rect x="13" y="13" width="10" height="82" rx="5" fill="url(#acc)"/>
+    <!-- 空电纹理 -->
+    <rect x="28" y="13" width="155" height="82" rx="8" fill="#ffffff" fill-opacity="0.03"/>
+  </g>
+
+  <!-- 主标题 -->
+  <text x="400" y="292" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
+        font-size="46" font-weight="bold" fill="url(#txt)" letter-spacing="2">120W 慢充</text>
+
+  <!-- 副标题 -->
+  <text x="400" y="330" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
+        font-size="18" fill="#ffffff" fill-opacity="0.45" letter-spacing="2">充电中… 预计还需 5 小时 59 分</text>
+
+  <!-- 分隔线 -->
+  <line x1="250" y1="362" x2="550" y2="362" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+
+  <!-- 底部吐槽 -->
+  <text x="400" y="394" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
+        font-size="14" fill="#ffffff" fill-opacity="0.28" letter-spacing="1">已有 90% 的用户放弃了等待</text>
+
+  <!-- 角标 -->
+  <g transform="translate(620, 372)">
+    <rect x="0" y="0" width="120" height="32" rx="16" fill="#415fff" fill-opacity="0.18"
+          stroke="#415fff" stroke-opacity="0.35" stroke-width="1"/>
+    <text x="60" y="21" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
+          font-size="12" fill="#a8b8ff" letter-spacing="1">反向充电</text>
+  </g>
+</svg>
