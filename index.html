@@ -889,7 +889,7 @@
         <!-- ===== 商店 ===== -->
         <li class="dropdown"><a href="#">商店</a>
             <ul class="dropdown-menu">
-                <li><a href="#" id="storeDapeng">🏪 大鹏店</a></li>
+                <li><a href="#" id="storeDapeng">🍗 大鹏鸡翅店</a></li>
             </ul>
         </li>
         <li><a href="#">服务</a></li>
@@ -1035,6 +1035,18 @@
     </div>
 
     <script>
+// ================================================================
+// 🆕 新标签页打开（带拦截兜底）
+// ================================================================
+function openNewTab(url) {
+    if (!url) return;
+    var w = window.open(url, '_blank');
+    // 被浏览器弹窗拦截时，退化为当前页跳转
+    if (!w || w.closed || typeof w.closed === 'undefined') {
+        window.location.assign(url);
+    }
+}
+
         // ================================================================
         // 0. 更新日志数据
         // ================================================================
@@ -1401,7 +1413,7 @@ document.getElementById('heroBtn').onclick = function(e) {
     if (!baseUrl.endsWith('/')) {
         baseUrl += '/';
     }
-    window.location.href = baseUrl + 'application/ai/';
+    openNewTab(baseUrl + 'application/ai/');
 };
 
         // 9.3 导航下拉菜单
@@ -1591,14 +1603,14 @@ function showVersionSelector() {
     document.getElementById('versionLight').onclick = function() {
         closeSelector();
         var targetUrl = getBaseUrl() + 'application/dapencomputer/index.html';
-        window.location.href = targetUrl;
+        openNewTab(targetUrl);
     };
 
     // 版本二：极致智障（永远等于第一个数）
     document.getElementById('versionPure').onclick = function() {
         closeSelector();
         var targetUrl = getBaseUrl() + 'application/dapencomputer/PureMentalRetardation.html';
-        window.location.href = targetUrl;
+        openNewTab(targetUrl);
     };
 
     // 取消
@@ -1624,12 +1636,16 @@ function showVersionSelector() {
     };
 }
 // ================================================================
-// 🆕 商店 → 大鹏店（敬请期待）
+// 🆕 商店 → 大鹏鸡翅店（跳转 /dapengstore/）
 // ================================================================
 document.getElementById('storeDapeng').onclick = function(e) {
     e.preventDefault();
     e.stopPropagation();
-    openPopup('🏪', '大鹏店 · 反向商店', '负库存·慢发货·AI智障导购', '敬请期待，大鹏店即将开业！');
+    var baseUrl = window.location.href.split('?')[0].split('#')[0];
+    if (!baseUrl.endsWith('/')) {
+        baseUrl += '/';
+    }
+    openNewTab(baseUrl + 'dapengstore/');
 };
 // ================================================================
 // 🆕 应用 → 大鹏音乐（跳转 /music/）
@@ -1642,7 +1658,7 @@ document.getElementById('appMusic').onclick = function(e) {
         baseUrl += '/';
     }
     var targetUrl = baseUrl + 'music/';
-    window.location.href = targetUrl;
+    openNewTab(targetUrl);
 };
 document.getElementById('appAI').onclick = function(e) {
     e.preventDefault();
@@ -1651,7 +1667,7 @@ document.getElementById('appAI').onclick = function(e) {
     if (!baseUrl.endsWith('/')) {
         baseUrl += '/';
     }
-    window.location.href = baseUrl + 'application/ai/';
+    openNewTab(baseUrl + 'application/ai/');
 };
 
 // ================================================================
@@ -1664,7 +1680,7 @@ document.getElementById('gaoxiaoNav').onclick = function(e) {
     if (!baseUrl.endsWith('/')) {
         baseUrl += '/';
     }
-    window.location.href = baseUrl + 'gaoxiao/';
+    openNewTab(baseUrl + 'gaoxiao/');
 };
     </script>
 
