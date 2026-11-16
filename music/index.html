@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>🎵 大鹏音乐 · 反向旗舰</title>
-    <script src="../api_config.js" onerror="console.warn('⚠️ 未找到 api_config.js')"></script>
+    <!-- API 地址已改为下方 script 里固定写死，不再依赖 api_config.js -->
     <style>
         /* ===== 重置 & 基础 ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -190,6 +193,65 @@
             animation: apiFloat 3s ease-in-out infinite;
         }
         @keyframes apiFloat { 0%,100% { transform: translateX(0); } 50% { transform: translateX(2px); } }
+
+        /* ===== 🆕 API 失败原因提示条 ===== */
+        .api-error {
+            position: fixed;
+            top: 56px;
+            left: 0;
+            right: 0;
+            z-index: 99;
+            display: none;
+            align-items: center;
+            gap: 9px;
+            padding: 10px 16px;
+            background: rgba(255, 69, 58, 0.13);
+            border-bottom: 1px solid rgba(255, 69, 58, 0.3);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            color: #ff9a92;
+            font-size: 12px;
+            line-height: 1.55;
+            animation: aeSlideDown .35s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .api-error.show { display: flex; }
+
+        @keyframes aeSlideDown {
+            0%   { opacity: 0; transform: translateY(-100%); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .api-error .ae-icon { font-size: 14px; flex-shrink: 0; }
+
+        .api-error .ae-text {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+        }
+
+        .api-error .ae-close {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .25s ease;
+            font-family: inherit;
+        }
+
+        .api-error .ae-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transform: rotate(90deg);
+        }
 
         /* ===== 搜索框 ===== */
         .search-box {
@@ -912,6 +974,13 @@
         <span class="api-status" id="apiStatus">📍 加载中...</span>
     </div>
 
+    <!-- ===== 🆕 API 失败原因提示条 ===== -->
+    <div class="api-error" id="apiError">
+        <span class="ae-icon">⚠️</span>
+        <span class="ae-text" id="apiErrorText"></span>
+        <button class="ae-close" id="apiErrorClose" aria-label="关闭">✕</button>
+    </div>
+
     <!-- ===== 搜索界面 ===== -->
     <div class="container" id="searchContainer">
         <div class="search-section">
@@ -1034,11 +1103,55 @@
             var cursorGlow = document.getElementById('cursorGlow');
 
             if (apiStatus) {
-                apiStatus.textContent = '📍 ' + API_BASE;
+                // 只显示主机部分（避免窄屏被截断），完整地址放 title
+                apiStatus.textContent = '📍 ' + API_BASE.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                apiStatus.title = 'API: ' + API_BASE;
                 if (!apiReady) {
                     apiStatus.classList.add('loading');
                     apiStatus.textContent = '⚠️ 未配置';
                 }
+            }
+
+            // ===== 🆕 API 失败原因提示条 =====
+            var apiErrorEl = document.getElementById('apiError');
+            var apiErrorText = document.getElementById('apiErrorText');
+            var apiErrorClose = document.getElementById('apiErrorClose');
+
+            function showApiError(reason) {
+                if (!apiErrorEl || !apiErrorText) return;
+                apiErrorText.textContent = reason;
+                apiErrorEl.classList.add('show');
+                console.warn('❌ API 失败：' + reason);
+            }
+
+            function hideApiError() {
+                if (apiErrorEl) apiErrorEl.classList.remove('show');
+            }
+
+            if (apiErrorClose) apiErrorClose.onclick = hideApiError;
+
+            // 把失败翻译成人话
+            function describeApiError(err, response) {
+                if (response) {
+                    var s = response.status;
+                    if (s === 401) return 'HTTP 401 · 鉴权失败（Authorization 无效或已过期）';
+                    if (s === 403) return 'HTTP 403 · 服务器拒绝访问（Origin 白名单不匹配）';
+                    if (s === 404) return 'HTTP 404 · 接口不存在';
+                    if (s === 429) return 'HTTP 429 · 请求太频繁被限流';
+                    if (s >= 500) return 'HTTP ' + s + ' · 服务器内部错误';
+                    return 'HTTP ' + s + ' · 请求失败';
+                }
+                var m = (err && err.message) ? String(err.message) : String(err || '');
+
+                // 兼容我们自己抛的 'HTTP 403' 这种格式
+                var hm = m.match(/^HTTP\s+(\d{3})$/);
+                if (hm) return describeApiError(null, { status: parseInt(hm[1], 10) });
+
+                if (/Failed to fetch|NetworkError|Load failed/i.test(m)) {
+                    return '无法连接 ' + API_BASE + '（服务器未启动 / 网络不通 / 被跨域拦截）';
+                }
+                if (/timeout|timed out|超时/i.test(m)) return '请求超时 · ' + API_BASE;
+                return m || '未知错误';
             }
 
             // ===== 鼠标柔光 =====
@@ -1429,7 +1542,17 @@
 
                 try {
                     var response = await fetch(API_BASE + 'search?keywords=' + encodeURIComponent(keyword) + '&limit=100', { headers: getApiHeaders() });
+
+                    // 先判断 HTTP 状态（403/401 这类不会进 json()）
+                    if (!response.ok) {
+                        showApiError(describeApiError(null, response));
+                        showEmpty('⚠️', 'API 返回 HTTP ' + response.status);
+                        resultStats.innerHTML = '共 <strong>0</strong> 首歌曲';
+                        return;
+                    }
+
                     var data = await response.json();
+                    hideApiError();
 
                     if (data.code !== 200 || !data.result || !data.result.songs) {
                         showEmpty('😅', '没有找到相关歌曲');
@@ -1456,7 +1579,9 @@
                     resultStats.innerHTML = '共 <strong>' + currentPlaylist.length + '</strong> 首歌曲';
                 } catch (err) {
                     console.error('搜索失败:', err);
-                    showEmpty('💀', '搜索失败，请检查 API');
+                    var searchReason = describeApiError(err);
+                    showApiError(searchReason);
+                    showEmpty('💀', '搜索失败：' + searchReason);
                     resultStats.innerHTML = '共 <strong>0</strong> 首歌曲';
                 }
             }
@@ -1520,7 +1645,18 @@
                 try {
                     var url = API_BASE + 'song/url?id=' + song.id;
                     var response = await fetch(url, { headers: getApiHeaders() });
+
+                    if (!response.ok) {
+                        showApiError(describeApiError(null, response));
+                        noLyric.textContent = '⚠️ 获取播放地址失败（HTTP ' + response.status + '）';
+                        playIcon.src = 'assets/922cb8e9da73f15d4f797a65a39f9ce3.svg';
+                        playerBar.classList.remove('playing');
+                        return;
+                    }
+
                     var data = await response.json();
+                    hideApiError();
+
                     if (data.code === 200 && data.data && data.data[0] && data.data[0].url) {
                         audio.src = data.data[0].url;
                         audio.load();
@@ -1541,7 +1677,8 @@
                     }
                 } catch (err) {
                     console.error('播放失败:', err);
-                    noLyric.textContent = '💀 播放失败，请稍后重试';
+                    showApiError(describeApiError(err));
+                    noLyric.textContent = '💀 播放失败：' + describeApiError(err);
                     playIcon.src = 'assets/922cb8e9da73f15d4f797a65a39f9ce3.svg';
                     playerBar.classList.remove('playing');
                 }
@@ -1557,7 +1694,17 @@
                 try {
                     var url = API_BASE + 'lyric?id=' + songId + '&lv=-1&tv=-1&rv=-1';
                     var response = await fetch(url, { headers: getApiHeaders() });
+
+                    if (!response.ok) {
+                        showApiError(describeApiError(null, response));
+                        lyricWrapper.innerHTML = '<div class="no-lyric">🎵 歌词请求失败（HTTP ' + response.status + '）</div>';
+                        currentLyrics = [];
+                        return;
+                    }
+
                     var data = await response.json();
+                    hideApiError();
+
                     if (data.code === 200 && data.lrc && data.lrc.lyric) {
                         var lyricText = data.lrc.lyric;
                         currentLyrics = parseLrc(lyricText);
@@ -1568,7 +1715,9 @@
                     }
                 } catch (err) {
                     console.error('歌词加载失败:', err);
-                    lyricWrapper.innerHTML = '<div class="no-lyric">🎵 歌词加载失败</div>';
+                    var lyricReason = describeApiError(err);
+                    showApiError(lyricReason);
+                    lyricWrapper.innerHTML = '<div class="no-lyric">🎵 歌词加载失败<br><span style="font-size:11px;opacity:.6;">' + lyricReason + '</span></div>';
                     currentLyrics = [];
                 }
             }
@@ -1633,6 +1782,9 @@
                     try {
                         var url = API_BASE + 'lyric?id=' + songId + '&lv=-1&tv=-1&rv=-1';
                         fetch(url, { headers: getApiHeaders() }).then(function(response) {
+                            if (!response.ok) {
+                                throw new Error('HTTP ' + response.status);
+                            }
                             return response.json();
                         }).then(function(data) {
                             if (data.tlyric && data.tlyric.lyric) {
@@ -1724,8 +1876,10 @@
                             translateBtn.classList.remove('active');
                             reRenderLyricsWithTranslation();
                         }
-                    }).catch(function() {
-                        showToast('翻译失败', '❌');
+                    }).catch(function(err) {
+                        var tReason = describeApiError(err);
+                        showApiError(tReason);
+                        showToast('翻译失败：' + tReason, '❌');
                         isTranslated = false;
                         translateBtn.classList.remove('active');
                     });
