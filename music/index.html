@@ -980,17 +980,17 @@
         document.addEventListener('DOMContentLoaded', function() {
 
             // ===== API 配置 =====
-            // 远程 API
-            var REMOTE_API = 'http://43.161.193.202/';
+            // ① 直连你的服务器（HTTP 80）
+            var API_BASE = 'http://43.161.193.202/';
 
-            // ⚠️ 远程 API 只接受 Origin = https://effect-cpu.github.io，
-            //    而浏览器的 Origin 由页面地址决定、JS 无法伪造 → 直连必然 403。
-            //    所以这里走本地代理 proxy.py（默认 3001 端口），由代理补上 Origin。
-            var proxyHost = window.location.hostname || '127.0.0.1';
-            var API_BASE = 'http://' + proxyHost + ':3001/';
+            // ② 如果服务器 CORS 仍只允许 effect-cpu.github.io（浏览器直连会 403），
+            //    把上面那行注释掉，改用本地代理（需先 cd music && python3 proxy.py）：
+            // var _ph = window.location.hostname || '127.0.0.1';
+            // var API_BASE = 'http://' + _ph + ':3001/';
+
             var apiReady = true;
 
-            // 🔑 请求头（直连远程时需要；走代理时由 proxy.py 自动添加）
+            // 🔑 请求头（直连时必须带，服务器靠这两个头鉴权）
             var API_HEADERS = {
                 'X-Client': 'dapenggw-music',
                 'Authorization': 'Bearer 6f3a9c2e8b1d4f7a0c5e9b2d8f1a3c6e'
@@ -999,9 +999,6 @@
             function getApiHeaders() {
                 return API_HEADERS;
             }
-
-            console.log('✅ 代理地址:', API_BASE);
-            console.log('✅ 远程源  :', REMOTE_API);
 
             console.log('✅ API 地址:', API_BASE);
             console.log('✅ 请求头:', API_HEADERS);
