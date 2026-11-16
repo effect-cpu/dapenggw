@@ -980,15 +980,31 @@
         document.addEventListener('DOMContentLoaded', function() {
 
             // ===== API 配置 =====
-            var API_BASE = 'http://127.0.0.1:3000/';
-            var apiReady = false;
-            if (typeof API_CONFIG !== 'undefined' && API_CONFIG && API_CONFIG.baseURL) {
-                API_BASE = API_CONFIG.baseURL;
-                apiReady = true;
-                console.log('✅ API 地址:', API_BASE);
-            } else {
-                console.warn('⚠️ 未找到 api_config.js，使用默认地址');
+            // 远程 API
+            var REMOTE_API = 'http://43.161.193.202/';
+
+            // ⚠️ 远程 API 只接受 Origin = https://effect-cpu.github.io，
+            //    而浏览器的 Origin 由页面地址决定、JS 无法伪造 → 直连必然 403。
+            //    所以这里走本地代理 proxy.py（默认 3001 端口），由代理补上 Origin。
+            var proxyHost = window.location.hostname || '127.0.0.1';
+            var API_BASE = 'http://' + proxyHost + ':3001/';
+            var apiReady = true;
+
+            // 🔑 请求头（直连远程时需要；走代理时由 proxy.py 自动添加）
+            var API_HEADERS = {
+                'X-Client': 'dapenggw-music',
+                'Authorization': 'Bearer 6f3a9c2e8b1d4f7a0c5e9b2d8f1a3c6e'
+            };
+
+            function getApiHeaders() {
+                return API_HEADERS;
             }
+
+            console.log('✅ 代理地址:', API_BASE);
+            console.log('✅ 远程源  :', REMOTE_API);
+
+            console.log('✅ API 地址:', API_BASE);
+            console.log('✅ 请求头:', API_HEADERS);
 
             // ===== DOM 元素 =====
             var body = document.body;
@@ -1415,7 +1431,7 @@
                 resultStats.innerHTML = '⏳ 加载中...';
 
                 try {
-                    var response = await fetch(API_BASE + 'search?keywords=' + encodeURIComponent(keyword) + '&limit=100');
+                    var response = await fetch(API_BASE + 'search?keywords=' + encodeURIComponent(keyword) + '&limit=100', { headers: getApiHeaders() });
                     var data = await response.json();
 
                     if (data.code !== 200 || !data.result || !data.result.songs) {
@@ -1506,7 +1522,7 @@
 
                 try {
                     var url = API_BASE + 'song/url?id=' + song.id;
-                    var response = await fetch(url);
+                    var response = await fetch(url, { headers: getApiHeaders() });
                     var data = await response.json();
                     if (data.code === 200 && data.data && data.data[0] && data.data[0].url) {
                         audio.src = data.data[0].url;
@@ -1543,7 +1559,7 @@
                 currentLyrics = [];
                 try {
                     var url = API_BASE + 'lyric?id=' + songId + '&lv=-1&tv=-1&rv=-1';
-                    var response = await fetch(url);
+                    var response = await fetch(url, { headers: getApiHeaders() });
                     var data = await response.json();
                     if (data.code === 200 && data.lrc && data.lrc.lyric) {
                         var lyricText = data.lrc.lyric;
@@ -1619,7 +1635,7 @@
                 return new Promise(function(resolve, reject) {
                     try {
                         var url = API_BASE + 'lyric?id=' + songId + '&lv=-1&tv=-1&rv=-1';
-                        fetch(url).then(function(response) {
+                        fetch(url, { headers: getApiHeaders() }).then(function(response) {
                             return response.json();
                         }).then(function(data) {
                             if (data.tlyric && data.tlyric.lyric) {
