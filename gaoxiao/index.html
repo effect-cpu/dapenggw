@@ -1102,8 +1102,8 @@
         <button class="collapse-btn open" id="collapseBtn">
             <span class="cb-arrow" id="cbArrow">▼</span>
             <span class="cb-text">
-                <span id="cbText">收起官方条目</span>
-                <span class="cb-hint" id="cbHint">自己的帖子不受影响</span>
+                <span id="cbText">收起其他条目</span>
+                <span class="cb-hint" id="cbHint">只留自己发的</span>
             </span>
             <span class="cb-count" id="cbCount">0</span>
             <span class="cb-count mine" id="cbMineCount" style="display:none;">0</span>
@@ -1200,36 +1200,27 @@
         //    → 不在名单里的作者 = 自己加的（永不折叠）
         //    → 也可在 JSON 里显式写 "custom": true / "official": false
         // ================================================================
-        var OFFICIAL_WRITERS = [
-            '大鹏品牌部',
-            '大鹏商城运营',
-            '小雕电竞品牌部',
-            '大鹏运维组',
-            '大鹏计算器项目组',
-            '大鹏工业设计部',
-            '大鹏影像实验室',
-            '大鹏充电事业部',
-            '大鹏反向数学研究院',
-            '大鹏科技观察员',
-            '大鹏音乐前端',
-            '大鹏 AI 团队',
-            '大鹏AI团队'
-        ];
+        // ================================================================
+        // 👤 「我自己发的」作者白名单
+        //    规则：只有这里的作者（或 JSON 里标了 "custom": true）的帖子不折叠
+        //          其余所有人（官方 + 其他网友）点折叠都会收起
+        //    以后加新帖子：① 用下面的名字，或 ② 在 JSON 里写 "custom": true
+        // ================================================================
+        var MY_WRITERS = ['奶茶', 'my', 't'];
 
-        // 是否为自己加的帖子
-        function isCustomPost(p) {
+        // 是否为自己发的帖子（true = 永不折叠）
+        function isMinePost(p) {
             // 1. 显式标记优先
-            if (p.custom === true) return true;
-            if (p.custom === false) return false;
-            if (p.official === true) return false;
-            if (p.official === false) return true;
-            if (p.type === 'custom' || p.type === 'user' || p.type === 'mine') return true;
+            if (p.custom === true || p.mine === true) return true;
+            if (p.custom === false || p.official === true) return false;
 
-            // 2. 按作者名判断
+            // 2. 按作者名白名单（默认：不是我的）
             var writer = String(p.writer || '').trim();
-            if (!writer) return true;          // 没写作者 → 当自己的，保险
-            return OFFICIAL_WRITERS.indexOf(writer) === -1;
+            return MY_WRITERS.indexOf(writer) !== -1;
         }
+
+        // 兼容旧名
+        var isCustomPost = isMinePost;
 
         // ================================================================
         // 3. 数据加载
@@ -1532,7 +1523,7 @@
             // 若无自定义帖子，加一个"全部收起提示"占位
             if (customCount === 0) {
                 html += '<div class="feed-state" id="allCollapsedTip" style="display:none;">' +
-                        '📦 官方条目已全部收起<br>' +
+                        '📦 其他条目已全部收起<br>' +
                         '<span style="font-size:11px;opacity:0.5;">点上方按钮展开</span>' +
                         '</div>';
             }
@@ -1540,7 +1531,7 @@
             postFeed.innerHTML = html;
 
             // 计数
-            cbCount.textContent = '官方 ' + officialCount;
+            cbCount.textContent = '其他 ' + officialCount;
             counterEl.textContent = '😂 ' + sorted.length + ' 条';
 
             if (customCount > 0) {
@@ -1697,12 +1688,12 @@
             // 按钮状态
             if (isCollapsed) {
                 collapseBtn.classList.remove('open');
-                cbText.textContent = '展开官方条目';
+                cbText.textContent = '展开其他条目';
                 cbHint.textContent = officialsHiddenHint();
             } else {
                 collapseBtn.classList.add('open');
-                cbText.textContent = '收起官方条目';
-                cbHint.textContent = customCount > 0 ? '自己的 ' + customCount + ' 条不受影响' : '自己的帖子不受影响';
+                cbText.textContent = '收起其他条目';
+                cbHint.textContent = customCount > 0 ? '只留自己的 ' + customCount + ' 条' : '自己的帖子不受影响';
             }
         }
 
